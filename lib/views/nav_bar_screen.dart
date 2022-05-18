@@ -8,8 +8,9 @@ import 'package:infocofrade/views/qr_code_screen.dart';
 import '../models/hermano.dart';
 
 class Navegation extends StatefulWidget {
-  Navegation(this.hermano, {Key? key}) : super(key: key);
-  Hermano hermano;
+  const Navegation(this.hermano, {Key? key}) : super(key: key);
+  final Hermano hermano;
+
   @override
   State<Navegation> createState() => _Navegation();
 }
@@ -29,9 +30,9 @@ class _Navegation extends State<Navegation> {
   _getDrawerItemWidget(int pos) {
     switch (pos) {
       case 0:
-        return const Profile();
+        return Profile(hermano);
       case 1:
-        return const QR();
+        return QR(hermano);
       case 2:
         return const Itinerario();
     }
@@ -86,13 +87,12 @@ class _Navegation extends State<Navegation> {
             children: [
               UserAccountsDrawerHeader(
                 accountName: Text(
-                  hermano.nombre.toString(),
-                  style: TextStyle(fontFamily: 'Roboto'),
+                  hermano.nombre.toString() +
+                      " " +
+                      hermano.apellidos.toString(),
+                  style: const TextStyle(fontFamily: 'Roboto'),
                 ),
-                accountEmail: const Text(
-                  'usuario@gmail.com',
-                  style: TextStyle(fontFamily: 'Roboto'),
-                ),
+                accountEmail: null,
                 currentAccountPicture: CircleAvatar(
                   backgroundColor: Colors.transparent,
                   child: ClipOval(

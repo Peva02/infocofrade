@@ -1,10 +1,12 @@
 // ignore_for_file: import_of_legacy_library_into_null_safe
 import 'package:flutter/material.dart';
 import 'package:infocofrade/main.dart';
+import '../models/hermano.dart';
 import 'elements_generator.dart';
 
 class Profile extends StatefulWidget {
-  const Profile({Key? key}) : super(key: key);
+  const Profile(this.hermano, {Key? key}) : super(key: key);
+  final Hermano hermano;
 
   @override
   State<Profile> createState() => _ProfileState();
@@ -22,20 +24,15 @@ class _ProfileState extends State<Profile> {
   final TextEditingController _nombreText = TextEditingController();
   final TextEditingController _apellidoText = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  late final Hermano hermano;
 
   //Instanciamos los focusNode para poder hacer referencia al foco de cada FormField
-  late FocusNode usuario,
-      contrasenia,
-      confirmcontrasenia,
-      mail,
-      nombre,
-      apellido;
+  late FocusNode usuario, contrasenia, confirmcontrasenia, nombre, apellido;
 
   //Instanciamos una key para cada uno de los FormField, para poder verificar los campos
   final _usuarioKey = GlobalKey<FormFieldState>();
   final _contraseniaKey = GlobalKey<FormFieldState>();
   final _confirmcontraseniaKey = GlobalKey<FormFieldState>();
-  final _mailKey = GlobalKey<FormFieldState>();
   final _nombreKey = GlobalKey<FormFieldState>();
   final _apellidoKey = GlobalKey<FormFieldState>();
 
@@ -46,10 +43,10 @@ class _ProfileState extends State<Profile> {
   @override
   void initState() {
     super.initState();
+    hermano = widget.hermano;
     usuario = FocusNode();
     contrasenia = FocusNode();
     confirmcontrasenia = FocusNode();
-    mail = FocusNode();
     nombre = FocusNode();
     apellido = FocusNode();
 
@@ -71,11 +68,6 @@ class _ProfileState extends State<Profile> {
         passTwo = _confirmcontraseniaText.text;
         _confirmcontraseniaKey.currentState?.validate();
         _contraseniaKey.currentState?.validate();
-      }
-    });
-    mail.addListener(() {
-      if (mail.hasFocus || !mail.hasFocus) {
-        _mailKey.currentState?.validate();
       }
     });
 
@@ -113,11 +105,11 @@ class _ProfileState extends State<Profile> {
                         Row(
                           children: [
                             divisorExpanded(Colors.white),
-                            const SizedBox(
+                            SizedBox(
                               child: Center(
                                 child: Text(
-                                  '¡Hola, USUARIO!',
-                                  style: TextStyle(
+                                  '¡Hola, ' + hermano.nombre.toString() + '!',
+                                  style: const TextStyle(
                                       color: Colors.white,
                                       fontSize: 25,
                                       fontWeight: FontWeight.bold,
@@ -159,13 +151,6 @@ class _ProfileState extends State<Profile> {
                                   true),
                               labelText(null, "Datos Personales", Colors.white,
                                   Colors.white),
-                              addFormField(
-                                  mail,
-                                  _mailKey,
-                                  _mailText,
-                                  'Mail',
-                                  const Icon(Icons.mail, color: Colors.grey),
-                                  false),
                               addFormField(
                                   nombre,
                                   _nombreKey,

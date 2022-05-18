@@ -1,16 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:infocofrade/models/hermano.dart';
 import 'package:qr_flutter/qr_flutter.dart';
-
 import 'elements_generator.dart';
 
 class QR extends StatefulWidget {
-  const QR({Key? key}) : super(key: key);
+  const QR(this.hermano, {Key? key}) : super(key: key);
+  final Hermano hermano;
 
   @override
   State<QR> createState() => _QRState();
 }
 
 class _QRState extends State<QR> {
+  late Hermano hermano;
+  @override
+  void initState() {
+    super.initState();
+    hermano = widget.hermano;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -48,7 +56,11 @@ class _QRState extends State<QR> {
                                           fontSize: 18),
                                     ),
                                   ),
-                                  dato("Usuario: ", "Usuario 1"),
+                                  dato(
+                                      "Usuario: ",
+                                      hermano.nombre.toString() +
+                                          ' ' +
+                                          hermano.apellidos.toString()),
                                   dato("Cofradía: ", "Cofradía 1"),
                                   dato("Antigüedad: ", "3 Años"),
                                   dato("Posición de salida: ", "Monaguillo"),

@@ -235,15 +235,17 @@ class _MyHomePageState extends State<MyHomePage> {
                                     child: InkWell(
                                       splashColor: Colors.transparent,
                                       highlightColor: Colors.transparent,
-                                      onTap: () {
+                                      onTap: () async {
                                         changePrefreces();
                                         canLog = false;
-                                        //TODO Pasar un objeto hermano cuando inicie sesion como anonimo
-                                       /* Navigator.push(
+                                        Hermano hermano = Hermano();
+                                        hermano =
+                                            await conector.getHermano('0');
+                                        Navigator.push(
                                           context,
                                           MaterialPageRoute(
                                               builder: (context) =>
-                                                  Navegation()*/),
+                                                  Navegation(hermano)),
                                         );
                                       },
                                       child: Text(
