@@ -1,6 +1,4 @@
 // ignore_for_file: import_of_legacy_library_into_null_safe
-
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:infocofrade/main.dart';
 import 'elements_generator.dart';
@@ -55,14 +53,12 @@ class _ProfileState extends State<Profile> {
     nombre = FocusNode();
     apellido = FocusNode();
 
-    //Validamos usuario
+    //Validamos campos
     usuario.addListener(() {
       if (usuario.hasFocus || !usuario.hasFocus) {
         _usuarioKey.currentState?.validate();
       }
     });
-
-    //Validamos contraseña
     contrasenia.addListener(() {
       if (contrasenia.hasFocus || !contrasenia.hasFocus) {
         passOne = _contraseniaText.text;
@@ -77,21 +73,17 @@ class _ProfileState extends State<Profile> {
         _contraseniaKey.currentState?.validate();
       }
     });
-
-    //validamos mail
     mail.addListener(() {
       if (mail.hasFocus || !mail.hasFocus) {
         _mailKey.currentState?.validate();
       }
     });
 
-    //validamos nombre
     nombre.addListener(() {
       if (nombre.hasFocus || !nombre.hasFocus) {
         _nombreKey.currentState?.validate();
       }
     });
-    //validamos apellidos
     apellido.addListener(() {
       if (apellido.hasFocus || !apellido.hasFocus) {
         _apellidoKey.currentState?.validate();
@@ -120,28 +112,16 @@ class _ProfileState extends State<Profile> {
                         //Imagen y nombre de ususario
                         Row(
                           children: [
-                            ClipOval(
-                              child: CachedNetworkImage(
-                                imageUrl:
-                                    'https://assets.stickpng.com/images/585e4bd7cb11b227491c3397.png',
-                                errorWidget: (context, url, error) =>
-                                    const Icon(
-                                  Icons.account_circle,
-                                  size: 75,
-                                  color: Colors.white,
-                                ),
-                                height: 85,
-                              ),
-                            ),
                             divisorExpanded(Colors.white),
                             const SizedBox(
                               child: Center(
                                 child: Text(
-                                  'USUARIO',
+                                  '¡Hola, USUARIO!',
                                   style: TextStyle(
                                       color: Colors.white,
                                       fontSize: 25,
-                                      fontFamily: 'Relaway'),
+                                      fontWeight: FontWeight.bold,
+                                      fontFamily: 'title_font'),
                                 ),
                               ),
                             ),

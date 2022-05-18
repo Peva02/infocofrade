@@ -2,40 +2,31 @@ import 'dart:io';
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
+import 'package:infocofrade/models/hermano.dart';
 import 'package:infocofrade/models/procesion.dart';
 
 import '../main.dart';
 
 class Conector {
   late String domain = 'http://iesayala.ddns.net/eduardo/';
-  late String infinityFree = 'http://infocofrade.infinityfreeapp.com/';
 
   //Este método es el encargado de cargar todos los países
-
   Future<List<Procesion>> getProcesiones() async {
     HttpOverrides.global = MyHttpOverrides();
 
     String url = domain + 'selectCofradias.php';
-    String urlFree = infinityFree + 'selectCofradias.php';
 
     http.Response response = await http.get(Uri.parse(url));
     late List<Procesion> result;
     if (response.statusCode == 200) {
       var data = json.decode(response.body);
       result = data.map<Procesion>((e) => Procesion.fromJson(e)).toList();
-    } else {
-      http.Response response = await http.get(Uri.parse(urlFree));
-      if (response.statusCode == 200) {
-        var data = json.decode(response.body);
-        result = data.map<Procesion>((e) => Procesion.fromJson(e)).toList();
-      }
     }
     return result;
   }
 
   Future<bool> canLogin(String dni, String passwd) async {
     HttpOverrides.global = MyHttpOverrides();
-    print(passwd);
     var url =
         domain + "selectLogin.php?dni='" + dni + "'&password='" + passwd + "'";
 
@@ -52,9 +43,46 @@ class Conector {
     }
     return false;
   }
+
+  Future<bool> insertHermano(Hermano hermano) async {
+    HttpOverrides.global = MyHttpOverrides();
+    var url = 'http://iesayala.ddns.net/eduardo/insertHermanos.php?nombre="' +
+        hermano.nombre.toString() +
+        '"&apellidos="' +
+        hermano.apellidos.toString() +
+        '"&dni="' +
+        hermano.dni.toString() +
+        '"&passwd="' +
+        hermano.password.toString() +
+        '"&tlf=' +
+        hermano.telefono.toString();
+    http.Response response = await http.get(Uri.parse(url));
+    if (response.statusCode == 200 &&
+        response.body.toString().trim().isNotEmpty) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  Future<Hermano> getHermano(dni) async {
+    HttpOverrides.global = MyHttpOverrides();
+
+    http.Response response = await http.get(Uri.parse(
+        "http://iesayala.ddns.net/eduardo/selectHermano.php?dni=" + dni));
+    Hermano hermano = Hermano();
+    if (response.statusCode == 200) {
+      var data = json.decode(response.body);
+      hermano.nombre = data[0]['nombre'];
+      hermano.apellidos = data[0]['apellidos'];
+      hermano.telefono = data[0]['telefono'];
+      hermano.dni = data[0]['dni'];
+      hermano.antiguedad = data[0]['antiguedad'];
+    }
+    return hermano;
+  }
 }
-
-
+  
 
   /*//-------------------------------------------------------------------------------------------------------------------------
   //Este método es el encargado de cargar todas las poblaciones

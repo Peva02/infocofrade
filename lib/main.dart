@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
 import 'package:infocofrade/conection/conector.dart';
+import 'package:infocofrade/models/hermano.dart';
 import 'package:infocofrade/views/elements_generator.dart';
 import 'package:infocofrade/views/nav_bar_screen.dart';
 import 'package:infocofrade/views/signup_screen.dart';
@@ -39,7 +40,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 //Creamos dos controladres para obtener el texto de los FormFields, uno para el usuario y otro para la contraseña
-final TextEditingController usuarioText = TextEditingController();
+final TextEditingController dniText = TextEditingController();
 final TextEditingController contraseniaText = TextEditingController();
 late bool canLog;
 
@@ -47,10 +48,10 @@ class _MyHomePageState extends State<MyHomePage> {
   final _formKey = GlobalKey<FormState>();
 
   //Instanciamos los focusNode para poder hacer referencia al foco de cada FormField
-  late FocusNode usuario, contrasenia;
+  late FocusNode dni, contrasenia;
 
   //Instanciamos una key para cada uno de los FormField
-  final _usuarioKey = GlobalKey<FormFieldState>();
+  final _dniKey = GlobalKey<FormFieldState>();
   final _contraseniaKey = GlobalKey<FormFieldState>();
 
   //Declaramos el checkBox para mantener la sesion iniciada como false o desmarcado por defecto
@@ -62,7 +63,7 @@ class _MyHomePageState extends State<MyHomePage> {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     setState(() {
       checkBoxValue = preferences.getBool("checkBox")!;
-      usuarioText.text = preferences.getString("usuario")!;
+      dniText.text = preferences.getString("dni")!;
       contraseniaText.text = preferences.getString("passwd")!;
     });
   }
@@ -73,12 +74,12 @@ class _MyHomePageState extends State<MyHomePage> {
     super.initState();
     //Al iniciar la app, cargaremos las preferencias
     _loadPreferences();
-    usuario = FocusNode();
+    dni = FocusNode();
     contrasenia = FocusNode();
     //Validamos usuario
-    usuario.addListener(() {
-      if (usuario.hasFocus || !usuario.hasFocus) {
-        _usuarioKey.currentState?.validate();
+    dni.addListener(() {
+      if (dni.hasFocus || !dni.hasFocus) {
+        _dniKey.currentState?.validate();
       }
     });
     //Validamos contraseña
@@ -134,10 +135,10 @@ class _MyHomePageState extends State<MyHomePage> {
                               //Llamamos a los métodos encargados de añadir los campos y el botón de submit
                               children: <Widget>[
                                 addFormField(
-                                    usuario,
-                                    _usuarioKey,
-                                    usuarioText,
-                                    'Usuario',
+                                    dni,
+                                    _dniKey,
+                                    dniText,
+                                    'Dni ',
                                     const Icon(Icons.person,
                                         color: Colors.grey),
                                     false),
@@ -148,7 +149,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                     'Contraseña',
                                     const Icon(Icons.key, color: Colors.grey),
                                     true),
-                                submit(_formKey, context, usuarioText,
+                                submit(_formKey, context, dniText,
                                     contraseniaText),
                               ],
                             ),
@@ -237,15 +238,16 @@ class _MyHomePageState extends State<MyHomePage> {
                                       onTap: () {
                                         changePrefreces();
                                         canLog = false;
-                                        Navigator.push(
+                                        //TODO Pasar un objeto hermano cuando inicie sesion como anonimo
+                                       /* Navigator.push(
                                           context,
                                           MaterialPageRoute(
                                               builder: (context) =>
-                                                  const Navegation()),
+                                                  Navegation()*/),
                                         );
                                       },
                                       child: Text(
-                                        " Acceder como anónimo",
+                                        "Acceder como anónimo",
                                         style: TextStyle(
                                             color: Colors.yellow.shade700,
                                             fontWeight: FontWeight.bold),
@@ -286,11 +288,11 @@ class _MyHomePageState extends State<MyHomePage> {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     setState(() {
       if (checkBoxValue) {
-        preferences.setString("usuario", usuarioText.text);
+        preferences.setString("dni", dniText.text);
         preferences.setString("passwd", contraseniaText.text);
         preferences.setBool("checkBox", checkBoxValue);
       } else {
-        preferences.setString("usuario", "");
+        preferences.setString("dni", "");
         preferences.setString("passwd", "");
         preferences.setBool("checkBox", checkBoxValue);
       }
@@ -318,10 +320,13 @@ class _MyHomePageState extends State<MyHomePage> {
 
             if (_formKey.currentState!.validate()) {
               if (canLog) {
+                Hermano hermano = Hermano();
+                hermano = await conector.getHermano(dniText.text);
                 changePrefreces();
-                Navigator.push(
+                Navigator.pushAndRemoveUntil(
                   context,
-                  MaterialPageRoute(builder: (context) => const Navegation()),
+                  MaterialPageRoute(builder: (context) => Navegation(hermano)),
+                  (route) => false,
                 );
               } else {
                 ScaffoldMessenger.of(context).showSnackBar(

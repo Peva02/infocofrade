@@ -5,14 +5,24 @@ import 'package:infocofrade/views/itinerario_screen.dart';
 import 'package:infocofrade/views/profile_screen.dart';
 import 'package:infocofrade/views/qr_code_screen.dart';
 
-class Navegation extends StatefulWidget {
-  const Navegation({Key? key}) : super(key: key);
+import '../models/hermano.dart';
 
+class Navegation extends StatefulWidget {
+  Navegation(this.hermano, {Key? key}) : super(key: key);
+  Hermano hermano;
   @override
   State<Navegation> createState() => _Navegation();
 }
 
 class _Navegation extends State<Navegation> {
+  late Hermano hermano;
+
+  @override
+  void initState() {
+    super.initState();
+    hermano = widget.hermano;
+  }
+
   int _selectedDrawItem = 2;
 
   ///Dependiendo de la opción seleccionada, carga la pantalla seleccionada en el body de esta pantalla
@@ -75,8 +85,8 @@ class _Navegation extends State<Navegation> {
             padding: EdgeInsets.zero,
             children: [
               UserAccountsDrawerHeader(
-                accountName: const Text(
-                  "usuario",
+                accountName: Text(
+                  hermano.nombre.toString(),
                   style: TextStyle(fontFamily: 'Roboto'),
                 ),
                 accountEmail: const Text(
