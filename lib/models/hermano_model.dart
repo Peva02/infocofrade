@@ -27,14 +27,4 @@ class Hermano {
     telefono = json['telefono'];
     antiguedad = json['fIngreso'];
   }
-
-  information() {
-    print(idHermano.toString() +
-        nombre.toString() +
-        apellidos.toString() +
-        dni.toString() +
-        password.toString() +
-        telefono.toString() +
-        antiguedad.toString());
-  }
 }

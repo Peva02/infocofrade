@@ -1,7 +1,7 @@
 // ignore_for_file: import_of_legacy_library_into_null_safe,
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:infocofrade/models/procesion.dart';
+import 'package:infocofrade/models/procesion_model.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'elements_generator.dart';
@@ -40,8 +40,8 @@ class _ProcesionInfo extends State<ProcesionInfo> {
           markerId: const MarkerId('id-1'),
           position: _coordenadas,
           infoWindow: InfoWindow(
-            title: "Iglesia",
-            snippet: procesion.iglesia.toString(),
+            title: "Localización",
+            snippet: procesion.nombre.toString(),
           ),
         ),
       );
@@ -340,7 +340,7 @@ class _ProcesionInfo extends State<ProcesionInfo> {
               borderRadius: BorderRadius.circular(10),
               side: const BorderSide(color: Colors.white)),
           margin: EdgeInsets.only(
-              bottom: MediaQuery.of(context).size.height - 100,
+              bottom: MediaQuery.of(context).size.height - 172,
               right: 20,
               left: 20),
         ),

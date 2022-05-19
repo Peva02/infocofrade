@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
 import 'package:infocofrade/conection/conector.dart';
-import 'package:infocofrade/models/hermano.dart';
+import 'package:infocofrade/models/hermano_model.dart';
 import 'package:infocofrade/views/elements_generator.dart';
 
 class Signup extends StatefulWidget {
@@ -281,7 +281,7 @@ class _SignupState extends State<Signup> {
                 );
                 return;
               }
-              if (!validationTlf(hermano.telefono.toString())) {
+              if (!validationTelf(hermano.telefono.toString())) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     backgroundColor: Colors.red,
@@ -443,21 +443,5 @@ class _SignupState extends State<Signup> {
             }),
       ),
     );
-  }
-
-  validationDni(String dni) {
-    var regExp = RegExp(r'^[\d]{8}[A-Za-z]{1}$');
-    if (regExp.hasMatch(dni)) {
-      return true;
-    }
-    return false;
-  }
-
-  validationTlf(String tlf) {
-    var regExp = RegExp(r'^[\d]{9}$');
-    if (regExp.hasMatch(tlf)) {
-      return true;
-    }
-    return false;
   }
 }

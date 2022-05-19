@@ -1,11 +1,12 @@
 // ignore_for_file: import_of_legacy_library_into_null_saf
 import 'package:flutter/material.dart';
+import 'package:infocofrade/conection/conector.dart';
 import 'package:infocofrade/main.dart';
 import 'package:infocofrade/views/itinerario_screen.dart';
 import 'package:infocofrade/views/profile_screen.dart';
 import 'package:infocofrade/views/qr_code_screen.dart';
-
-import '../models/hermano.dart';
+import '../models/hermano_model.dart';
+import '../models/qr_model.dart';
 
 class Navegation extends StatefulWidget {
   const Navegation(this.hermano, {Key? key}) : super(key: key);
@@ -17,7 +18,9 @@ class Navegation extends StatefulWidget {
 
 class _Navegation extends State<Navegation> {
   late Hermano hermano;
+  Qr qrCode = Qr();
 
+  Conector conector = Conector();
   @override
   void initState() {
     super.initState();
@@ -32,7 +35,7 @@ class _Navegation extends State<Navegation> {
       case 0:
         return Profile(hermano);
       case 1:
-        return QR(hermano);
+        return QR(hermano.idHermano.toString());
       case 2:
         return const Itinerario();
     }

@@ -1,7 +1,7 @@
 // ignore_for_file: import_of_legacy_library_into_null_safe
 import 'package:flutter/material.dart';
 import 'package:infocofrade/main.dart';
-import '../models/hermano.dart';
+import '../models/hermano_model.dart';
 import 'elements_generator.dart';
 
 class Profile extends StatefulWidget {
@@ -13,24 +13,24 @@ class Profile extends StatefulWidget {
 }
 
 late String passOne, passTwo;
-String itemSeleccionadoProvincias = "";
 
 class _ProfileState extends State<Profile> {
   //Creamos los controladres para obtener el texto de los campos de los formularios
-  final TextEditingController _usuarioText = TextEditingController();
+  final TextEditingController _dniText = TextEditingController();
+  final TextEditingController _tlfText = TextEditingController();
   final TextEditingController _contraseniaText = TextEditingController();
   final TextEditingController _confirmcontraseniaText = TextEditingController();
-  final TextEditingController _mailText = TextEditingController();
   final TextEditingController _nombreText = TextEditingController();
   final TextEditingController _apellidoText = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   late final Hermano hermano;
 
   //Instanciamos los focusNode para poder hacer referencia al foco de cada FormField
-  late FocusNode usuario, contrasenia, confirmcontrasenia, nombre, apellido;
+  late FocusNode tlf, dni, contrasenia, confirmcontrasenia, nombre, apellido;
 
   //Instanciamos una key para cada uno de los FormField, para poder verificar los campos
-  final _usuarioKey = GlobalKey<FormFieldState>();
+  final _dniKey = GlobalKey<FormFieldState>();
+  final _tlfKey = GlobalKey<FormFieldState>();
   final _contraseniaKey = GlobalKey<FormFieldState>();
   final _confirmcontraseniaKey = GlobalKey<FormFieldState>();
   final _nombreKey = GlobalKey<FormFieldState>();
@@ -44,16 +44,17 @@ class _ProfileState extends State<Profile> {
   void initState() {
     super.initState();
     hermano = widget.hermano;
-    usuario = FocusNode();
+    tlf = FocusNode();
+    dni = FocusNode();
     contrasenia = FocusNode();
     confirmcontrasenia = FocusNode();
     nombre = FocusNode();
     apellido = FocusNode();
 
     //Validamos campos
-    usuario.addListener(() {
-      if (usuario.hasFocus || !usuario.hasFocus) {
-        _usuarioKey.currentState?.validate();
+    dni.addListener(() {
+      if (dni.hasFocus || !dni.hasFocus) {
+        _dniKey.currentState?.validate();
       }
     });
     contrasenia.addListener(() {
@@ -120,7 +121,8 @@ class _ProfileState extends State<Profile> {
                             divisorExpanded(Colors.white),
                           ],
                         ),
-                        labelText(null, "Cuenta", Colors.white, Colors.white),
+                        labelText(null, "Datos Personales", Colors.white,
+                            Colors.white),
 
                         //Creamos el formulario donde estableceremmos el contenido de este
                         //Llamamos a los métodos encargados de añadir los campos y el botón de submit
@@ -129,11 +131,33 @@ class _ProfileState extends State<Profile> {
                           child: Column(
                             children: <Widget>[
                               addFormField(
-                                  usuario,
-                                  _usuarioKey,
-                                  _usuarioText,
-                                  'Usuario',
-                                  const Icon(Icons.person, color: Colors.grey),
+                                  nombre,
+                                  _nombreKey,
+                                  _nombreText,
+                                  hermano.nombre.toString(),
+                                  const Icon(Icons.abc, color: Colors.grey),
+                                  false),
+                              addFormField(
+                                  apellido,
+                                  _apellidoKey,
+                                  _apellidoText,
+                                  hermano.apellidos.toString(),
+                                  const Icon(Icons.abc, color: Colors.grey),
+                                  false),
+                              addFormField(
+                                  dni,
+                                  _dniKey,
+                                  _dniText,
+                                  hermano.dni.toString(),
+                                  const Icon(Icons.fingerprint,
+                                      color: Colors.grey),
+                                  false),
+                              addFormField(
+                                  tlf,
+                                  _tlfKey,
+                                  _tlfText,
+                                  hermano.telefono.toString(),
+                                  const Icon(Icons.call, color: Colors.grey),
                                   false),
                               addFormField(
                                   contrasenia,
@@ -149,22 +173,6 @@ class _ProfileState extends State<Profile> {
                                   'Confirmar contraseña',
                                   const Icon(Icons.key, color: Colors.grey),
                                   true),
-                              labelText(null, "Datos Personales", Colors.white,
-                                  Colors.white),
-                              addFormField(
-                                  nombre,
-                                  _nombreKey,
-                                  _nombreText,
-                                  'Nombre',
-                                  const Icon(Icons.abc, color: Colors.grey),
-                                  false),
-                              addFormField(
-                                  apellido,
-                                  _apellidoKey,
-                                  _apellidoText,
-                                  'Apellidos',
-                                  const Icon(Icons.abc, color: Colors.grey),
-                                  false),
                               SizedBox(
                                 width: 500,
                                 child: Column(
@@ -224,7 +232,6 @@ class _ProfileState extends State<Profile> {
               filled: true,
               fillColor: Colors.white,
               //Dependiendo del estado del campo el borde se pintará de un color u otro
-
               //El borde que se mostrará cuando el campo este habilitado y no seleccionado
               enabledBorder: const OutlineInputBorder(
                   borderRadius: BorderRadius.all(Radius.circular(10.0)),

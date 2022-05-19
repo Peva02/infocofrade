@@ -4,7 +4,7 @@ import 'dart:convert';
 import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
 import 'package:infocofrade/conection/conector.dart';
-import 'package:infocofrade/models/hermano.dart';
+import 'package:infocofrade/models/hermano_model.dart';
 import 'package:infocofrade/views/elements_generator.dart';
 import 'package:infocofrade/views/nav_bar_screen.dart';
 import 'package:infocofrade/views/signup_screen.dart';
@@ -241,6 +241,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                         Hermano hermano = Hermano();
                                         hermano =
                                             await conector.getHermano('0');
+
                                         Navigator.push(
                                           context,
                                           MaterialPageRoute(

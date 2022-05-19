@@ -69,11 +69,18 @@ validationTelf(String telefono) {
   if (!_numeric.hasMatch(telefono) ||
       telefono.length < 9 ||
       telefono.length > 17) {
-    telefono = 'N/A';
+    return false;
   }
-  return telefono;
+  return true;
 }
 
+validationDni(String dni) {
+  var regExp = RegExp(r'^[\d]{8}[A-Za-z]{1}$');
+  if (regExp.hasMatch(dni)) {
+    return true;
+  }
+  return false;
+}
 //-------------------------------------------------------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------------------------------------------------------
@@ -106,64 +113,5 @@ labelText(icon, text, colorText, colorLine) => Row(
         divisorExpanded(colorLine),
       ],
     );
-
-//-------------------------------------------------------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------------------------------------------------------
-
-//Método encargado de añadir los elementos la DropDown
-
-/*addDropDown(List<String> items, error, itemSeleccionado, placeholderText) {
-  return Padding(
-    padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
-    child: DropdownButtonFormField2(
-      dropdownMaxHeight: 150.0,
-      decoration: InputDecoration(
-          isDense: true,
-          contentPadding: EdgeInsets.zero,
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
-          ),
-          filled: true,
-          fillColor: Colors.white),
-      isExpanded: true,
-      hint: Text(
-        placeholderText,
-        style: const TextStyle(
-            fontSize: 14, fontFamily: 'Roboto', fontWeight: FontWeight.bold),
-      ),
-      icon: const Icon(
-        Icons.arrow_drop_down,
-        color: Colors.black45,
-      ),
-      iconSize: 30,
-      buttonHeight: 60,
-      buttonPadding: const EdgeInsets.only(left: 20, right: 10),
-      dropdownDecoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
-      ),
-      items: items
-          .map((item) => DropdownMenuItem<String>(
-                value: item,
-                child: Text(
-                  item,
-                  style: const TextStyle(
-                    fontSize: 14,
-                  ),
-                ),
-              ))
-          .toList(),
-      validator: (value) {
-        if (value == null) {
-          return error;
-        }
-        return null;
-      },
-      onChanged: (value) {
-        itemSeleccionado = value.toString();
-      },
-    ),
-  );
-}*/
 
 //-------------------------------------------------------------------------------------------------------------------------

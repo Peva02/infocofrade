@@ -1,6 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:infocofrade/models/procesion.dart';
+import 'package:infocofrade/models/procesion_model.dart';
 import 'package:infocofrade/views/elements_generator.dart';
 import 'package:infocofrade/views/procesion_info_screen.dart';
 
@@ -22,7 +22,6 @@ class _Itinerario extends State<Itinerario> {
     conector.getProcesiones().then((value) {
       setState(() {
         listaProcesiones.addAll(value);
-        listaProcesiones.addAll(value);
       });
     });
   }
@@ -33,7 +32,7 @@ class _Itinerario extends State<Itinerario> {
       body: RefreshIndicator(
         onRefresh: () async {
           setState(() {
-            //listaProcesiones.clear();
+            listaProcesiones.clear();
           });
           await conector.getProcesiones().then((value) {
             setState(() {
