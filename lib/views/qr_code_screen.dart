@@ -15,15 +15,18 @@ class _QRState extends State<QR> {
   Qr qrCode = Qr();
   late String idHermano;
   Conector conector = Conector();
+
   @override
   void initState() {
     super.initState();
     idHermano = widget.idHermano;
-    conector.getQr(idHermano).then((value) {
-      setState(() {
-        qrCode = value;
-      });
-    });
+    conector.getQr(idHermano).then(
+      (value) {
+        setState(() {
+          qrCode = value;
+        });
+      },
+    );
   }
 
   @override
@@ -52,33 +55,31 @@ class _QRState extends State<QR> {
                                 children: [
                                   labelText(null, "Datos de hermano",
                                       Colors.white, Colors.white),
-                                  /*Card(
-                                      child: Column(
-                                    children: [
-                                      Padding(
-                                        padding:
-                                            const EdgeInsets.only(top: 8.0),
-                                        child: Text(
-                                          (DateTime.now().year - 1).toString() +
-                                              '-' +
-                                              DateTime.now().year.toString(),
-                                          style: const TextStyle(
-                                              fontFamily: 'title_font',
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 18),
+                                  Card(
+                                    child: Column(
+                                      children: [
+                                        Padding(
+                                          padding:
+                                              const EdgeInsets.only(top: 8.0),
+                                          child: Text(
+                                            qrCode.fecha.toString(),
+                                            style: const TextStyle(
+                                                fontFamily: 'title_font',
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 18),
+                                          ),
                                         ),
-                                      ),
-                                      dato("Usuario: ",
-                                          qrCode.usuario.toString()),
-                                      dato("Cofradía: ",
-                                          qrCode.cofradia.toString()),
-                                      dato("Antigüedad: ",
-                                          qrCode.antiguedad.toString()),
-                                      dato("Posición de salida: ",
-                                          qrCode.posicion.toString()),
-                                         
-                                    ],
-                                  ),),*/
+                                        dato("Usuario: ",
+                                            qrCode.usuario.toString()),
+                                        dato("Cofradía: ",
+                                            qrCode.cofradia.toString()),
+                                        dato("Antigüedad: ",
+                                            qrCode.antiguedad.toString()),
+                                        dato("Posición de salida: ",
+                                            qrCode.posicion.toString()),
+                                      ],
+                                    ),
+                                  ),
                                 ],
                               ),
                             ),
@@ -93,24 +94,16 @@ class _QRState extends State<QR> {
                                         MediaQuery.of(context).size.width / 2,
                                     child: Card(
                                         child: QrImage(
-                                      data:
-                                          'Año:' /* +
-                                          (DateTime.now().year - 1).toString() +
-                                          '-' +
-                                          DateTime.now().year.toString() +
-                                          '\n'
-                                              'Usuario: ' +
+                                      data: 'Año:' +
+                                          qrCode.fecha.toString() +
+                                          '\nUsuario: ' +
                                           qrCode.usuario.toString() +
-                                          '\n'
-                                              'Cofradia: ' +
+                                          '\nCofradia: ' +
                                           qrCode.cofradia.toString() +
-                                          '\n'
-                                              'Antigüedad: ' +
+                                          '\nAntigüedad: ' +
                                           qrCode.antiguedad.toString() +
-                                          '\n'
-                                              'Posicion de salida: ' +
-                                          qrCode.posicion.toString()*/
-                                      ,
+                                          '\nPosicion de salida: ' +
+                                          qrCode.posicion.toString(),
                                       version: QrVersions.auto,
                                       gapless: true,
                                     )),
