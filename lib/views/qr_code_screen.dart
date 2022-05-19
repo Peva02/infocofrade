@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:infocofrade/conection/conector.dart';
 import 'package:qr_flutter/qr_flutter.dart';
@@ -93,20 +95,30 @@ class _QRState extends State<QR> {
                                     width:
                                         MediaQuery.of(context).size.width / 2,
                                     child: Card(
-                                        child: QrImage(
-                                      data: 'Año:' +
-                                          qrCode.fecha.toString() +
-                                          '\nUsuario: ' +
-                                          qrCode.usuario.toString() +
-                                          '\nCofradia: ' +
-                                          qrCode.cofradia.toString() +
-                                          '\nAntigüedad: ' +
-                                          qrCode.antiguedad.toString() +
-                                          '\nPosicion de salida: ' +
-                                          qrCode.posicion.toString(),
-                                      version: QrVersions.auto,
-                                      gapless: true,
-                                    )),
+                                      child: QrImage(
+                                        data: 'Año:' +
+                                            qrCode.fecha.toString() +
+                                            '\nUsuario: ' +
+                                            qrCode.usuario.toString() +
+                                            '\nCofradia: ' +
+                                            qrCode.cofradia.toString() +
+                                            '\nAntigüedad: ' +
+                                            qrCode.antiguedad.toString() +
+                                            '\nPosicion de salida: ' +
+                                            qrCode.posicion.toString(),
+                                        version: QrVersions.auto,
+                                        gapless: true,
+                                        eyeStyle: const QrEyeStyle(
+                                            eyeShape: QrEyeShape.circle,
+                                            color: Colors.black),
+                                        dataModuleStyle:
+                                            const QrDataModuleStyle(
+                                          dataModuleShape:
+                                              QrDataModuleShape.circle,
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                    ),
                                   ),
                                 ],
                               ),

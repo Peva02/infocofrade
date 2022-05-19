@@ -356,7 +356,7 @@ class _ProfileState extends State<Profile> {
                         ),
                       ),
                       TextButton(
-                        onPressed: () => Navigator.of(context).pop(),
+                        onPressed: () => clear(),
                         child: const Text('Si'),
                       ),
                     ],
@@ -427,5 +427,17 @@ class _ProfileState extends State<Profile> {
     Navigator.of(context).pushAndRemoveUntil(
         MaterialPageRoute(builder: (context) => const InfoCofradeScreen()),
         (route) => false);
+  }
+
+  clear() {
+    setState(() {
+      _dniText.text = "";
+      _tlfText.text = "";
+      _contraseniaText.text = "";
+      _confirmcontraseniaText.text = "";
+      _nombreText.text = "";
+      _apellidoText.text = "";
+    });
+    Navigator.of(context).pop();
   }
 }
