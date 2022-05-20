@@ -81,8 +81,33 @@ class Conector {
       hermano.telefono = data[0]['telefono'];
       hermano.dni = data[0]['dni'];
       hermano.antiguedad = data[0]['antiguedad'];
+      hermano.password = data[0]['password'];
     }
     return hermano;
+  }
+
+  Future<bool> updateHermano(Hermano hermano) async {
+    HttpOverrides.global = MyHttpOverrides();
+    String url = domain +
+        'updateHermano.php?idHermano="' +
+        hermano.idHermano.toString() +
+        '"&nombre="' +
+        hermano.nombre.toString() +
+        '"&apellidos="' +
+        hermano.apellidos.toString() +
+        '"&dni="' +
+        hermano.dni.toString() +
+        '"&password="' +
+        hermano.password.toString() +
+        '"&telefono=' +
+        hermano.telefono.toString();
+    http.Response response = await http.get(Uri.parse(url));
+    if (response.statusCode == 200 &&
+        response.body.toString().trim().isNotEmpty) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   Future<Qr> getQr(String idHermano) async {

@@ -240,13 +240,13 @@ class _SignupState extends State<Signup> {
             if (_formKey.currentState!.validate()) {
               setState(
                 () {
-                  hermano.nombre = _nombreText.text;
-                  hermano.apellidos = _apellidoText.text;
-                  hermano.dni = _dniText.text;
+                  hermano.nombre = _nombreText.text.trim();
+                  hermano.apellidos = _apellidoText.text.trim();
+                  hermano.dni = _dniText.text.trim();
                   hermano.password = md5
-                      .convert(utf8.encode(_contraseniaText.text))
+                      .convert(utf8.encode(_contraseniaText.text.trim()))
                       .toString();
-                  hermano.telefono = _tlfText.text;
+                  hermano.telefono = _tlfText.text.trim();
                 },
               );
               if (!validationDni(hermano.dni.toString())) {

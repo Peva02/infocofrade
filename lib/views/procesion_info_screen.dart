@@ -65,7 +65,7 @@ class _ProcesionInfo extends State<ProcesionInfo> {
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          backgroundColor: Colors.amber,
+          backgroundColor: Colors.amber.shade700,
           content: Row(
             children: const [
               Icon(
@@ -318,7 +318,7 @@ class _ProcesionInfo extends State<ProcesionInfo> {
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          backgroundColor: Colors.amber,
+          backgroundColor: Colors.amber.shade700,
           content: Row(
             children: const [
               Icon(

@@ -1,5 +1,9 @@
 // ignore_for_file: import_of_legacy_library_into_null_safe
+import 'dart:convert';
+import 'package:crypto/crypto.dart';
+
 import 'package:flutter/material.dart';
+import 'package:infocofrade/conection/conector.dart';
 import 'package:infocofrade/main.dart';
 import '../models/hermano_model.dart';
 import 'elements_generator.dart';
@@ -12,9 +16,9 @@ class Profile extends StatefulWidget {
   State<Profile> createState() => _ProfileState();
 }
 
-late String passOne, passTwo;
-
 class _ProfileState extends State<Profile> {
+  final Conector conector = Conector();
+
   //Creamos los controladres para obtener el texto de los campos de los formularios
   final TextEditingController _dniText = TextEditingController();
   final TextEditingController _tlfText = TextEditingController();
@@ -50,38 +54,6 @@ class _ProfileState extends State<Profile> {
     confirmcontrasenia = FocusNode();
     nombre = FocusNode();
     apellido = FocusNode();
-
-    //Validamos campos
-    dni.addListener(() {
-      if (dni.hasFocus || !dni.hasFocus) {
-        _dniKey.currentState?.validate();
-      }
-    });
-    contrasenia.addListener(() {
-      if (contrasenia.hasFocus || !contrasenia.hasFocus) {
-        passOne = _contraseniaText.text;
-        _contraseniaKey.currentState?.validate();
-        _confirmcontraseniaKey.currentState?.validate();
-      }
-    });
-    confirmcontrasenia.addListener(() {
-      if (confirmcontrasenia.hasFocus || !confirmcontrasenia.hasFocus) {
-        passTwo = _confirmcontraseniaText.text;
-        _confirmcontraseniaKey.currentState?.validate();
-        _contraseniaKey.currentState?.validate();
-      }
-    });
-
-    nombre.addListener(() {
-      if (nombre.hasFocus || !nombre.hasFocus) {
-        _nombreKey.currentState?.validate();
-      }
-    });
-    apellido.addListener(() {
-      if (apellido.hasFocus || !apellido.hasFocus) {
-        _apellidoKey.currentState?.validate();
-      }
-    });
   }
 
   @override
@@ -91,124 +63,121 @@ class _ProfileState extends State<Profile> {
       body: ListView(
         primary: false,
         children: [
-          Center(
+          SingleChildScrollView(
             child: SizedBox(
               width: 500,
-              child: Padding(
-                padding: const EdgeInsets.only(top: 30.0),
-                child: Center(
-                  child: Padding(
-                    padding: const EdgeInsets.only(
-                        top: 10.0, left: 20.0, right: 20.0),
-                    child: Column(
-                      children: [
-                        //Imagen y nombre de ususario
-                        Row(
-                          children: [
-                            divisorExpanded(Colors.white),
-                            SizedBox(
-                              child: Center(
-                                child: Text(
-                                  '¡Hola, ' + hermano.nombre.toString() + '!',
-                                  style: const TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 25,
-                                      fontWeight: FontWeight.bold,
-                                      fontFamily: 'title_font'),
-                                ),
+              child: Center(
+                child: Padding(
+                  padding:
+                      const EdgeInsets.only(top: 10.0, left: 20.0, right: 20.0),
+                  child: Column(
+                    children: [
+                      //Imagen y nombre de ususario
+                      Row(
+                        children: [
+                          divisorExpanded(Colors.white),
+                          SizedBox(
+                            child: Center(
+                              child: Text(
+                                '¡Hola, ' + hermano.nombre.toString() + '!',
+                                style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 25,
+                                    fontWeight: FontWeight.bold,
+                                    fontFamily: 'title_font'),
                               ),
                             ),
-                            divisorExpanded(Colors.white),
+                          ),
+                          divisorExpanded(Colors.white),
+                        ],
+                      ),
+                      labelText(
+                          null, "Datos Personales", Colors.white, Colors.white),
+
+                      //Creamos el formulario donde estableceremmos el contenido de este
+                      //Llamamos a los métodos encargados de añadir los campos y el botón de submit
+                      Form(
+                        key: _formKey,
+                        child: Column(
+                          children: <Widget>[
+                            addFormField(
+                                nombre,
+                                _nombreKey,
+                                _nombreText,
+                                hermano.nombre.toString(),
+                                const Icon(Icons.abc, color: Colors.grey),
+                                false),
+                            addFormField(
+                                apellido,
+                                _apellidoKey,
+                                _apellidoText,
+                                hermano.apellidos.toString(),
+                                const Icon(Icons.abc, color: Colors.grey),
+                                false),
+                            addFormField(
+                                dni,
+                                _dniKey,
+                                _dniText,
+                                hermano.dni.toString(),
+                                const Icon(Icons.fingerprint,
+                                    color: Colors.grey),
+                                false),
+                            addFormField(
+                                tlf,
+                                _tlfKey,
+                                _tlfText,
+                                hermano.telefono.toString(),
+                                const Icon(Icons.call, color: Colors.grey),
+                                false),
+                            addFormField(
+                                contrasenia,
+                                _contraseniaKey,
+                                _contraseniaText,
+                                'Contraseña',
+                                const Icon(Icons.key, color: Colors.grey),
+                                true),
+                            addFormField(
+                                confirmcontrasenia,
+                                _confirmcontraseniaKey,
+                                _confirmcontraseniaText,
+                                'Confirmar contraseña',
+                                const Icon(Icons.key, color: Colors.grey),
+                                true),
+                            SizedBox(
+                              width: 500,
+                              child: Column(
+                                children: [
+                                  Row(
+                                    children: <Widget>[
+                                      Expanded(
+                                          child: button(
+                                              _formKey,
+                                              'Modificar',
+                                              Colors.amber.shade700,
+                                              Colors.white)),
+                                      Expanded(
+                                          child: button(
+                                        _formKey,
+                                        'Cancelar',
+                                        Colors.red,
+                                        Colors.white,
+                                      ))
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                            button(_formKey, 'Eliminar cuenta',
+                                Colors.grey.shade200, Colors.red)
                           ],
                         ),
-                        labelText(null, "Datos Personales", Colors.white,
-                            Colors.white),
-
-                        //Creamos el formulario donde estableceremmos el contenido de este
-                        //Llamamos a los métodos encargados de añadir los campos y el botón de submit
-                        Form(
-                          key: _formKey,
-                          child: Column(
-                            children: <Widget>[
-                              addFormField(
-                                  nombre,
-                                  _nombreKey,
-                                  _nombreText,
-                                  hermano.nombre.toString(),
-                                  const Icon(Icons.abc, color: Colors.grey),
-                                  false),
-                              addFormField(
-                                  apellido,
-                                  _apellidoKey,
-                                  _apellidoText,
-                                  hermano.apellidos.toString(),
-                                  const Icon(Icons.abc, color: Colors.grey),
-                                  false),
-                              addFormField(
-                                  dni,
-                                  _dniKey,
-                                  _dniText,
-                                  hermano.dni.toString(),
-                                  const Icon(Icons.fingerprint,
-                                      color: Colors.grey),
-                                  false),
-                              addFormField(
-                                  tlf,
-                                  _tlfKey,
-                                  _tlfText,
-                                  hermano.telefono.toString(),
-                                  const Icon(Icons.call, color: Colors.grey),
-                                  false),
-                              addFormField(
-                                  contrasenia,
-                                  _contraseniaKey,
-                                  _contraseniaText,
-                                  'Contraseña',
-                                  const Icon(Icons.key, color: Colors.grey),
-                                  true),
-                              addFormField(
-                                  confirmcontrasenia,
-                                  _confirmcontraseniaKey,
-                                  _confirmcontraseniaText,
-                                  'Confirmar contraseña',
-                                  const Icon(Icons.key, color: Colors.grey),
-                                  true),
-                              SizedBox(
-                                width: 500,
-                                child: Column(
-                                  children: [
-                                    Row(
-                                      children: <Widget>[
-                                        Expanded(
-                                            child: button(
-                                                _formKey,
-                                                'Modificar',
-                                                Colors.amber.shade700,
-                                                Colors.white)),
-                                        Expanded(
-                                            child: button(
-                                          _formKey,
-                                          'Cancelar',
-                                          Colors.red,
-                                          Colors.white,
-                                        ))
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              button(_formKey, 'Eliminar cuenta',
-                                  Colors.grey.shade200, Colors.red)
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
               ),
             ),
-          ),
+          )
         ],
       ),
     );
@@ -223,49 +192,55 @@ class _ProfileState extends State<Profile> {
       child: SizedBox(
         height: 80,
         child: TextFormField(
-            style: const TextStyle(fontFamily: 'Roboto'),
-            controller: controllerName,
-            focusNode: focusName,
-            key: keyName,
-            obscureText: obscureText,
-            decoration: InputDecoration(
-              filled: true,
-              fillColor: Colors.white,
-              //Dependiendo del estado del campo el borde se pintará de un color u otro
-              //El borde que se mostrará cuando el campo este habilitado y no seleccionado
-              enabledBorder: const OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                  borderSide: BorderSide(color: Colors.grey, width: 2)),
-              //El borde que se mostrará cuando al campo esté habilitado y seleccionado
-              focusedBorder: const OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                  borderSide: BorderSide(color: Colors.white, width: 2)),
-              //El borde que se mostrará cuando el campo este deshabilitado y no seleccionado
-              errorBorder: const OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                  borderSide: BorderSide(color: Colors.red, width: 2)),
-              //El borde que se mostrará cuando el campo este deshabilitado y seleccionado
-              focusedErrorBorder: const OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                  borderSide: BorderSide(color: Colors.orange, width: 2)),
-              hintText: hint,
-              hintStyle: const TextStyle(
-                color: Colors.grey,
-                fontSize: 15.0,
-              ),
-              prefixIcon: icono,
+          style: const TextStyle(fontFamily: 'Roboto'),
+          controller: controllerName,
+          focusNode: focusName,
+          key: keyName,
+          obscureText: obscureText,
+          decoration: InputDecoration(
+            filled: true,
+            fillColor: Colors.white,
+            //Dependiendo del estado del campo el borde se pintará de un color u otro
+            //El borde que se mostrará cuando el campo este habilitado y no seleccionado
+            enabledBorder: const OutlineInputBorder(
+                borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                borderSide: BorderSide(color: Colors.grey, width: 2)),
+            //El borde que se mostrará cuando al campo esté habilitado y seleccionado
+            focusedBorder: const OutlineInputBorder(
+                borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                borderSide: BorderSide(color: Colors.white, width: 2)),
+            //El borde que se mostrará cuando el campo este deshabilitado y no seleccionado
+            errorBorder: const OutlineInputBorder(
+                borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                borderSide: BorderSide(color: Colors.red, width: 2)),
+            //El borde que se mostrará cuando el campo este deshabilitado y seleccionado
+            focusedErrorBorder: const OutlineInputBorder(
+                borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                borderSide: BorderSide(color: Colors.orange, width: 2)),
+            hintText: hint,
+            hintStyle: const TextStyle(
+              color: Colors.grey,
+              fontSize: 15.0,
             ),
-            //Realizamos la validacion y comprobamos si el FormField se encuentra vacío
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Por favor, rellene todos los campos';
-              } else if (obscureText && value.length < 6) {
-                return 'La contraseña debe tener al menos 6 caracteres';
-              } else if (obscureText && passOne != passTwo) {
-                return 'Las contraseñas deben coincidir';
-              }
-              return null;
-            }),
+            prefixIcon: icono,
+          ),
+          //Realizamos la validacion y comprobamos si el FormField se encuentra vacío
+          validator: (value) {
+            if (obscureText &&
+                _contraseniaText.text != _confirmcontraseniaText.text) {
+              return 'Las contraseñas deben coincidir';
+            } else if (focusName == dni &&
+                !validationDni(_dniText.text) &&
+                value.toString().isNotEmpty) {
+              return 'Compruebe su dni';
+            } else if (focusName == tlf &&
+                !validationTelf(_tlfText.text) &&
+                value.toString().isNotEmpty) {
+              return 'Compruebe su telefono';
+            }
+            return null;
+          },
+        ),
       ),
     );
   }
@@ -377,13 +352,15 @@ class _ProfileState extends State<Profile> {
                             color: Colors.red,
                           ),
                         ),
-                        Text('¡ADVERTENCIA!',
-                            style: TextStyle(
-                                fontFamily: 'Roboto', color: Colors.red))
+                        Text(
+                          '¡ADVERTENCIA!',
+                          style: TextStyle(
+                              fontFamily: 'Roboto', color: Colors.red),
+                        )
                       ],
                     ),
                     content: const Text(
-                      '¿Esta seguro de que desea eliminar la cuenta? No podrá recuperarla una vez eliminada',
+                      '¿Esta seguro de que desea eliminar la cuenta? No podrá recuperarla una vez eliminada.',
                       style:
                           TextStyle(fontFamily: 'Roboto', color: Colors.black),
                     ),
@@ -417,9 +394,65 @@ class _ProfileState extends State<Profile> {
     );
   }
 
-  checkValues(_formKey, context) {
-    _formKey.currentState!.validate();
-    Navigator.pop(context);
+  checkValues(_formKey, context) async {
+    if (_formKey.currentState!.validate()) {
+      setState(
+        () {
+          if (_nombreText.text.isNotEmpty) {
+            hermano.nombre = _nombreText.text.trim();
+          }
+          if (_apellidoText.text.isNotEmpty) {
+            hermano.apellidos = _apellidoText.text.trim();
+          }
+          if (validationDni(_dniText.text)) {
+            hermano.dni = _dniText.text.trim();
+          }
+          if (validationTelf(_tlfText.text)) {
+            hermano.telefono = _tlfText.text.trim();
+          }
+          if (_contraseniaText.text.isNotEmpty) {
+            hermano.password = md5
+                .convert(utf8.encode(_contraseniaText.text.trim()))
+                .toString();
+          }
+        },
+      );
+      await conector.updateHermano(hermano).then(
+            (value) => ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                backgroundColor: Colors.green,
+                content: Row(
+                  children: const [
+                    Icon(
+                      Icons.sentiment_satisfied,
+                      size: 40,
+                      color: Colors.white,
+                    ),
+                    Expanded(
+                      child: Text(
+                        '¡Usuario actualiado correctamente!',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  ],
+                ),
+                behavior: SnackBarBehavior.floating,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    side: const BorderSide(color: Colors.white)),
+                margin: EdgeInsets.only(
+                    bottom: MediaQuery.of(context).size.height - 100,
+                    right: 20,
+                    left: 20),
+              ),
+            ),
+          );
+      clear();
+    } else {
+      showSnackBar('Compruebe la información de los campos.');
+      Navigator.pop(context);
+    }
   }
 
   deleteAcount(context) {
@@ -439,5 +472,37 @@ class _ProfileState extends State<Profile> {
       _apellidoText.text = "";
     });
     Navigator.of(context).pop();
+  }
+
+  showSnackBar(msg) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        backgroundColor: Colors.amber.shade700,
+        content: Row(
+          children: [
+            const Icon(
+              Icons.sentiment_dissatisfied,
+              size: 40,
+              color: Colors.white,
+            ),
+            Expanded(
+              child: Text(
+                msg,
+                textAlign: TextAlign.center,
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              ),
+            ),
+          ],
+        ),
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+            side: const BorderSide(color: Colors.white)),
+        margin: EdgeInsets.only(
+            bottom: MediaQuery.of(context).size.height - 100,
+            right: 20,
+            left: 20),
+      ),
+    );
   }
 }

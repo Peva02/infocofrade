@@ -124,12 +124,12 @@ class _Navegation extends State<Navegation> {
                   iconColor: Colors.green.shade700,
                   leading: const Icon(Icons.account_circle),
                   title: const Text('Perfil'),
-                  onTap: () => showProfileOption(context)),
+                  onTap: () => showProfileOption(0)),
               ListTile(
                 iconColor: Colors.black,
                 leading: const Icon(Icons.qr_code_rounded),
                 title: const Text('QR'),
-                onTap: () => _onSelectedItem(1),
+                onTap: () => showProfileOption(1),
               ),
               ListTile(
                 iconColor: Colors.blue,
@@ -157,11 +157,11 @@ class _Navegation extends State<Navegation> {
   }
 
   ///Comprueba que el usuario no sera anónimo, en cuyo caso no podra abrir la pantalla de "Perfil"
-  showProfileOption(context) {
+  showProfileOption(int pos) {
     if (canLog == false) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          backgroundColor: Colors.amber,
+          backgroundColor: Colors.amber.shade700,
           content: Row(
             children: const [
               Icon(
@@ -171,7 +171,7 @@ class _Navegation extends State<Navegation> {
               ),
               Expanded(
                 child: Text(
-                  'Inicie sesión para accerder a su perfil',
+                  'Inicie sesión para acceder a este apartado',
                   textAlign: TextAlign.center,
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
@@ -190,7 +190,14 @@ class _Navegation extends State<Navegation> {
       );
       Navigator.pop(context);
     } else {
-      _onSelectedItem(0);
+      switch (pos) {
+        case 0:
+          _onSelectedItem(0);
+          break;
+        case 1:
+          _onSelectedItem(1);
+          break;
+      }
     }
   }
 }
