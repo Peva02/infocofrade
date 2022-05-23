@@ -129,6 +129,35 @@ class _QRState extends State<QR> {
                 ),
               ),
             );
+          } else if (snapshot.hasError) {
+            return Center(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: const [
+                    Icon(
+                      Icons.warning_amber_rounded,
+                      size: 100,
+                      color: Colors.white,
+                    ),
+                    Text(
+                      'Error:',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontFamily: 'title_font',
+                          fontSize: 24),
+                    ),
+                    Text(
+                      'Actualmente no tiene asiganda ninguna posición en alguna cofradía',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(color: Colors.white, fontSize: 14),
+                    )
+                  ],
+                ),
+              ),
+            );
           } else {
             return screenCircularProgress();
           }
