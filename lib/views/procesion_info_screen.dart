@@ -52,55 +52,17 @@ class _ProcesionInfo extends State<ProcesionInfo> {
   initState() {
     super.initState();
     procesion = widget.procesion;
-    if (procesion.latitud != null && procesion.altitud != null) {
-      setState(() {
-        latitud = double.parse(procesion.latitud!);
-        altitud = double.parse(procesion.altitud!);
-        _coordenadas = LatLng(latitud, altitud);
-        _kGooglePlex = CameraPosition(
-          target: _coordenadas,
-          zoom: 16,
-        );
-      });
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          backgroundColor: Colors.amber.shade700,
-          content: Row(
-            children: const [
-              Icon(
-                Icons.warning_amber_rounded,
-                size: 40,
-                color: Colors.white,
-              ),
-              Expanded(
-                child: Text(
-                  'No hay localización disponible.',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-              ),
-            ],
-          ),
-          behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-              side: const BorderSide(color: Colors.white)),
-          margin: EdgeInsets.only(
-              bottom: MediaQuery.of(context).size.height - 100,
-              right: 20,
-              left: 20),
-        ),
+    try {
+      latitud = double.parse(procesion.latitud!);
+      altitud = double.parse(procesion.altitud!);
+      _coordenadas = LatLng(latitud, altitud);
+      _kGooglePlex = CameraPosition(
+        target: _coordenadas,
+        zoom: 16,
       );
-      setState(() {
-        latitud = 0;
-        altitud = 0;
-        _coordenadas = LatLng(latitud, altitud);
-        _kGooglePlex = CameraPosition(
-          target: _coordenadas,
-          zoom: 16,
-        );
-      });
+    } catch (e) {
+      latitud = 0;
+      altitud = 0;
     }
   }
 
@@ -282,17 +244,9 @@ class _ProcesionInfo extends State<ProcesionInfo> {
               Padding(
                 padding: const EdgeInsets.only(bottom: 50.0),
                 child: SizedBox(
-                  width: MediaQuery.of(context).size.width,
-                  height: 300,
-                  child: GoogleMap(
-                    markers: _markers,
-                    mapType: MapType.normal,
-                    initialCameraPosition: _kGooglePlex,
-                    onMapCreated: (GoogleMapController controller) {
-                      _onMapCreated(controller);
-                    },
-                  ),
-                ),
+                    width: MediaQuery.of(context).size.width,
+                    height: 300,
+                    child: googleMaps()),
               ),
             ],
           ),
@@ -311,7 +265,7 @@ class _ProcesionInfo extends State<ProcesionInfo> {
 
   ///Abre el telefono de nuestro dispositivo indicando el numero del centro
   void callprocesion() {
-    if (validationTelf(procesion.telefono.toString()) != 'N/A') {
+    if (validationTelf(procesion.telefono.toString())) {
       _launchURL(
         'tel://' + procesion.telefono.toString(),
       );
@@ -343,6 +297,48 @@ class _ProcesionInfo extends State<ProcesionInfo> {
               bottom: MediaQuery.of(context).size.height - 172,
               right: 20,
               left: 20),
+        ),
+      );
+    }
+  }
+
+  googleMaps() {
+    if (procesion.latitud != '0' && procesion.altitud != '0') {
+      return GoogleMap(
+        markers: _markers,
+        mapType: MapType.normal,
+        initialCameraPosition: _kGooglePlex,
+        onMapCreated: (GoogleMapController controller) {
+          _onMapCreated(controller);
+        },
+      );
+    } else {
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: const [
+              Icon(
+                Icons.location_off_outlined,
+                size: 100,
+                color: Colors.red,
+              ),
+              Text(
+                'Error:',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    color: Colors.white,
+                    fontFamily: 'title_font',
+                    fontSize: 24),
+              ),
+              Text(
+                'No se pudo localizar esta cofradía',
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Colors.white, fontSize: 14),
+              )
+            ],
+          ),
         ),
       );
     }

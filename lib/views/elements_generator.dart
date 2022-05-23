@@ -66,9 +66,7 @@ screenCircularProgress() {
 
 validationTelf(String telefono) {
   RegExp _numeric = RegExp(r'[ -()+]?[0-9]+$');
-  if (!_numeric.hasMatch(telefono) ||
-      telefono.length < 9 ||
-      telefono.length > 17) {
+  if (!_numeric.hasMatch(telefono) || telefono.length != 9) {
     return false;
   }
   return true;

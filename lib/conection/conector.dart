@@ -110,6 +110,19 @@ class Conector {
     }
   }
 
+  Future<bool> deleteHermano(Hermano hermano) async {
+    HttpOverrides.global = MyHttpOverrides();
+    String url =
+        domain + 'deleteHermano.php?idHermano=' + hermano.idHermano.toString();
+    http.Response response = await http.get(Uri.parse(url));
+    if (response.statusCode == 200 &&
+        response.body.toString().trim().isNotEmpty) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   Future<Qr> getQr(String idHermano) async {
     HttpOverrides.global = MyHttpOverrides();
     Uri url = Uri.parse(domain + 'selectQr.php?idHermano=' + idHermano);

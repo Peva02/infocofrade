@@ -5,6 +5,7 @@ import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
 import 'package:infocofrade/conection/conector.dart';
 import 'package:infocofrade/main.dart';
+import 'package:infocofrade/views/nav_bar_screen.dart';
 import '../models/hermano_model.dart';
 import 'elements_generator.dart';
 
@@ -293,7 +294,7 @@ class _ProfileState extends State<Profile> {
                         ),
                       ),
                       TextButton(
-                        onPressed: () => checkValues(_formKey, context),
+                        onPressed: () => modificarValues(_formKey, context),
                         child: const Text('Si'),
                       ),
                     ],
@@ -394,7 +395,7 @@ class _ProfileState extends State<Profile> {
     );
   }
 
-  checkValues(_formKey, context) async {
+  modificarValues(_formKey, context) async {
     if (_formKey.currentState!.validate()) {
       setState(
         () {
@@ -430,7 +431,7 @@ class _ProfileState extends State<Profile> {
                     ),
                     Expanded(
                       child: Text(
-                        '¡Usuario actualiado correctamente!',
+                        '¡Usuario actualiazdo correctamente!',
                         textAlign: TextAlign.center,
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
@@ -455,23 +456,82 @@ class _ProfileState extends State<Profile> {
     }
   }
 
-  deleteAcount(context) {
-    Navigator.pop(context);
-    Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (context) => const InfoCofradeScreen()),
-        (route) => false);
+  deleteAcount(context) async {
+    await conector.deleteHermano(hermano).then(
+      (bool value) {
+        if (value) {
+          Navigator.of(context).pushAndRemoveUntil(
+              MaterialPageRoute(builder: (context) => const Main()),
+              (route) => false);
+          return ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              backgroundColor: Colors.green,
+              content: Row(
+                children: const [
+                  Icon(
+                    Icons.sentiment_dissatisfied_outlined,
+                    size: 40,
+                    color: Colors.white,
+                  ),
+                  Expanded(
+                    child: Text(
+                      'Esperamos que vuelva pronto.',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ],
+              ),
+              behavior: SnackBarBehavior.floating,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                  side: const BorderSide(color: Colors.white)),
+              margin: EdgeInsets.only(
+                  bottom: MediaQuery.of(context).size.height - 100,
+                  right: 20,
+                  left: 20),
+            ),
+          );
+        } else {
+          Navigator.of(context).pop();
+          return ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              backgroundColor: Colors.red,
+              content: Row(
+                children: const [
+                  Icon(
+                    Icons.sentiment_neutral,
+                    size: 40,
+                    color: Colors.white,
+                  ),
+                  Expanded(
+                    child: Text(
+                      'Sucedió un error al eliminar su cuenta.',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ],
+              ),
+              behavior: SnackBarBehavior.floating,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                  side: const BorderSide(color: Colors.white)),
+              margin: EdgeInsets.only(
+                  bottom: MediaQuery.of(context).size.height - 100,
+                  right: 20,
+                  left: 20),
+            ),
+          );
+        }
+      },
+    );
   }
 
   clear() {
-    setState(() {
-      _dniText.text = "";
-      _tlfText.text = "";
-      _contraseniaText.text = "";
-      _confirmcontraseniaText.text = "";
-      _nombreText.text = "";
-      _apellidoText.text = "";
-    });
-    Navigator.of(context).pop();
+    Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(builder: (context) => Navegation(hermano)),
+        (route) => false);
   }
 
   showSnackBar(msg) {

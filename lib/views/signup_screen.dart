@@ -434,8 +434,6 @@ class _SignupState extends State<Signup> {
             validator: (value) {
               if (value == null || value.isEmpty) {
                 return 'Por favor, rellene todos los campos';
-              } else if (obscureText && value.length < 6) {
-                return 'La contraseña debe tener al menos 6 caracteres';
               } else if (obscureText && passOne != passTwo) {
                 return 'Las contraseñas deben coincidir';
               }

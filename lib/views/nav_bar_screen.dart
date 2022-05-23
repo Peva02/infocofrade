@@ -143,8 +143,7 @@ class _Navegation extends State<Navegation> {
                   iconColor: Colors.red,
                   leading: const Icon(Icons.logout),
                   onTap: () => Navigator.of(context).pushAndRemoveUntil(
-                      MaterialPageRoute(
-                          builder: (context) => const MyHomePage()),
+                      MaterialPageRoute(builder: (context) => const Main()),
                       (route) => false)),
             ],
           ),

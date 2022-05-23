@@ -27,16 +27,16 @@ class InfoCofradeScreen extends StatelessWidget {
           primarySwatch: Colors.purple,
           scaffoldBackgroundColor: Colors.purple.shade900),
       debugShowCheckedModeBanner: false,
-      home: const MyHomePage(),
+      home: const Main(),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key}) : super(key: key);
+class Main extends StatefulWidget {
+  const Main({Key? key}) : super(key: key);
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<Main> createState() => _MainState();
 }
 
 //Creamos dos controladres para obtener el texto de los FormFields, uno para el usuario y otro para la contraseña
@@ -44,7 +44,7 @@ final TextEditingController dniText = TextEditingController();
 final TextEditingController contraseniaText = TextEditingController();
 late bool canLog;
 
-class _MyHomePageState extends State<MyHomePage> {
+class _MainState extends State<Main> {
   final _formKey = GlobalKey<FormState>();
 
   //Instanciamos los focusNode para poder hacer referencia al foco de cada FormField
