@@ -1,48 +1,48 @@
 import 'dart:io';
 import 'dart:convert';
-
 import 'package:http/http.dart' as http;
 import 'package:infocofrade/models/hermano_model.dart';
 import 'package:infocofrade/models/procesion_model.dart';
 import 'package:infocofrade/models/qr_model.dart';
 
 class Conector {
-  late String domain = 'http://iesayala.ddns.net/eduardo/';
+  final String domain = 'http://iesayala.ddns.net/eduardo/';
 
-  //Este método es el encargado de cargar todos los países
+  ///Este método es el encargado de cargar las procesiones
   Future<List<Procesion>> getProcesiones() async {
     HttpOverrides.global = MyHttpOverrides();
 
     String url = domain + 'selectCofradias.php';
 
     http.Response response = await http.get(Uri.parse(url));
-    late List<Procesion> result;
+    late List<Procesion> procesionesList;
     if (response.statusCode == 200) {
       var data = json.decode(response.body);
-      result = data.map<Procesion>((e) => Procesion.fromJson(e)).toList();
+      procesionesList =
+          data.map<Procesion>((e) => Procesion.fromJson(e)).toList();
     }
-    return result;
+    return procesionesList;
   }
 
+  ///Comprueba si las credenciales del usuario son correctas
   Future<bool> canLogin(String dni, String passwd) async {
     HttpOverrides.global = MyHttpOverrides();
     String url =
         domain + "selectLogin.php?dni='" + dni + "'&password='" + passwd + "'";
 
     http.Response response = await http.get(Uri.parse(url));
-    late Map<String, dynamic> existe;
 
     if (response.statusCode == 200) {
       var data = json.decode(response.body);
-
-      existe = data[0];
-      if (existe['exist'] == '1') {
+      if (data[0]['exist'] == '1') {
         return true;
       }
     }
     return false;
   }
 
+  ///Ejecuta la consuta necesaria para dar de alta un usuario, pasandole
+  ///por parametros un objeto 'hermano'
   Future<bool> insertHermano(Hermano hermano) async {
     HttpOverrides.global = MyHttpOverrides();
     String url = domain +
@@ -65,6 +65,7 @@ class Conector {
     }
   }
 
+  ///Obtiene los datos de un hermano mediante su dni
   Future<Hermano> getHermano(String dni) async {
     HttpOverrides.global = MyHttpOverrides();
     Uri url = Uri.parse(domain + 'selectHermano.php?dni=' + dni);
@@ -84,6 +85,7 @@ class Conector {
     return hermano;
   }
 
+  ///Ejecuta la consulta encargada de modificar los datos de un 'hermano'
   Future<bool> updateHermano(Hermano hermano) async {
     HttpOverrides.global = MyHttpOverrides();
     String url = domain +
@@ -103,11 +105,11 @@ class Conector {
     if (response.statusCode == 200 &&
         response.body.toString().trim().isNotEmpty) {
       return true;
-    } else {
-      return false;
     }
+    return false;
   }
 
+  ///Ejecuta la consulta encargada de eliminar un 'hermano'
   Future<bool> deleteHermano(Hermano hermano) async {
     HttpOverrides.global = MyHttpOverrides();
     String url =
@@ -116,11 +118,12 @@ class Conector {
     if (response.statusCode == 200 &&
         response.body.toString().trim().isNotEmpty) {
       return true;
-    } else {
-      return false;
     }
+    return false;
   }
 
+  ///Obtiene los datos necesario para generar un QR con los datos
+  ///del idHermano indicado
   Future<Qr> getQr(String idHermano) async {
     HttpOverrides.global = MyHttpOverrides();
     Uri url = Uri.parse(domain + 'selectQr.php?idHermano=' + idHermano);
@@ -138,6 +141,7 @@ class Conector {
   }
 }
 
+///Clase necesaria para generar las consutas a la base de datos debido a que la conexion no esta certificada, por lo que debemos
 class MyHttpOverrides extends HttpOverrides {
   @override
   HttpClient createHttpClient(SecurityContext? context) {

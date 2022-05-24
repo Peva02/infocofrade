@@ -22,7 +22,6 @@ class Procesion {
       required this.altitud,
       required this.latitud});
 
-  //method that assign values to respective datatype vairables
   Procesion.fromJson(Map<String, dynamic> json) {
     idCofradia = json['idCofradia'];
     nombre = json['nombre'];

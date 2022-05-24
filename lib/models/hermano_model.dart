@@ -16,15 +16,4 @@ class Hermano {
       this.password,
       this.telefono,
       this.antiguedad});
-
-  //method that assign values to respective datatype vairables
-  Hermano.fromJson(Map<String, dynamic> json) {
-    idHermano = json['idHermano'];
-    nombre = json['nombre'];
-    apellidos = json['apellidos'];
-    dni = json['dni'];
-    password = json['password'];
-    telefono = json['telefono'];
-    antiguedad = json['fIngreso'];
-  }
 }
