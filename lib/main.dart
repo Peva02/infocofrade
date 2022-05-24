@@ -17,7 +17,6 @@ void main() {
 class InfoCofradeScreen extends StatelessWidget {
   const InfoCofradeScreen({Key? key}) : super(key: key);
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -39,27 +38,34 @@ class Main extends StatefulWidget {
   State<Main> createState() => _MainState();
 }
 
-//Creamos dos controladres para obtener el texto de los FormFields, uno para el usuario y otro para la contraseña
+//Creamos dos controladres para obtener el texto de los FormFields, uno para el dni
+// y otro para la contraseña
 final TextEditingController dniText = TextEditingController();
 final TextEditingController contraseniaText = TextEditingController();
+
+//Esta varibale nos sevira para verificar si el usuario a accedido de forma anónima
+//o a iniciado sesión como usuario
 late bool canLog;
 
 class _MainState extends State<Main> {
   final _formKey = GlobalKey<FormState>();
 
   //Instanciamos los focusNode para poder hacer referencia al foco de cada FormField
-  late FocusNode dni, contrasenia;
+  late FocusNode _dni, _contrasenia;
 
   //Instanciamos una key para cada uno de los FormField
   final _dniKey = GlobalKey<FormFieldState>();
   final _contraseniaKey = GlobalKey<FormFieldState>();
 
-  //Declaramos el checkBox para mantener la sesion iniciada como false o desmarcado por defecto
+  //Declaramos el checkBox para mantener la sesion iniciada
   bool checkBoxValue = false;
+
+  //Instancia del controlador, del cual accedemos a los metodos para solicitar
+  //información de la base de datos
   Conector conector = Conector();
 
-  //Cargamos las preferencias
-  _loadPreferences() async {
+  //Metodo encargado de cargar las preferencias de la app
+  void _loadPreferences() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     setState(() {
       checkBoxValue = preferences.getBool("checkBox")!;
@@ -74,20 +80,25 @@ class _MainState extends State<Main> {
     super.initState();
     //Al iniciar la app, cargaremos las preferencias
     _loadPreferences();
-    dni = FocusNode();
-    contrasenia = FocusNode();
-    //Validamos usuario
-    dni.addListener(() {
-      if (dni.hasFocus || !dni.hasFocus) {
-        _dniKey.currentState?.validate();
-      }
-    });
+    _dni = FocusNode();
+    _contrasenia = FocusNode();
+    //Validamos el dni del usuario, comprobaremos que cumple con la
+    //estructura de un dni(8 digitos y una letra)
+    _dni.addListener(
+      () {
+        if (_dni.hasFocus || !_dni.hasFocus) {
+          _dniKey.currentState?.validate();
+        }
+      },
+    );
     //Validamos contraseña
-    contrasenia.addListener(() {
-      if (contrasenia.hasFocus || !contrasenia.hasFocus) {
-        _contraseniaKey.currentState?.validate();
-      }
-    });
+    _contrasenia.addListener(
+      () {
+        if (_contrasenia.hasFocus || !_contrasenia.hasFocus) {
+          _contraseniaKey.currentState?.validate();
+        }
+      },
+    );
   }
 
   @override
@@ -128,14 +139,16 @@ class _MainState extends State<Main> {
                               divisorExpanded(Colors.white),
                             ],
                           ),
-                          //Creamos el formulario donde estableceremmos el contenido de este
+                          //Creamos el formulario donde estableceremmos el
+                          //contenido de este
                           Form(
                             key: _formKey,
                             child: Column(
-                              //Llamamos a los métodos encargados de añadir los campos y el botón de submit
+                              //Llamamos a los métodos encargados de añadir los
+                              //campos y el botón de submit
                               children: <Widget>[
                                 addFormField(
-                                    dni,
+                                    _dni,
                                     _dniKey,
                                     dniText,
                                     'Dni ',
@@ -143,7 +156,7 @@ class _MainState extends State<Main> {
                                         color: Colors.grey),
                                     false),
                                 addFormField(
-                                    contrasenia,
+                                    _contrasenia,
                                     _contraseniaKey,
                                     contraseniaText,
                                     'Contraseña',
@@ -154,9 +167,9 @@ class _MainState extends State<Main> {
                               ],
                             ),
                           ),
-                          /*Esta sección pertenece a la posicionada debajo del formulario, donde se encuentra el checkBox de mantener sesion iniciada
-                              y el restablecer contraseña*/
-
+                          /*Esta sección pertenece a la posicionada debajo del 
+                          formulario, donde se encuentra el checkBox 
+                          de mantener sesion iniciada*/
                           Row(
                             mainAxisSize: MainAxisSize.max,
                             children: [
@@ -167,7 +180,7 @@ class _MainState extends State<Main> {
                                     splashColor: Colors.transparent,
                                     highlightColor: Colors.transparent,
                                     onTap: () {
-                                      onChanged(checkBoxValue);
+                                      _onChanged(checkBoxValue);
                                     },
                                     child: Row(
                                       mainAxisSize: MainAxisSize.min,
@@ -176,13 +189,14 @@ class _MainState extends State<Main> {
                                           value: checkBoxValue,
                                           side: BorderSide(
                                               color: Colors.amber.shade700),
-                                          onChanged: onChanged,
+                                          onChanged: _onChanged,
                                           activeColor: Colors.white,
                                           checkColor: Colors.purple.shade900,
                                         ),
-                                        const Text("Mantener Iniciado",
-                                            style:
-                                                TextStyle(color: Colors.white))
+                                        const Text(
+                                          "Mantener Iniciado",
+                                          style: TextStyle(color: Colors.white),
+                                        )
                                       ],
                                     ),
                                   ),
@@ -190,8 +204,8 @@ class _MainState extends State<Main> {
                               ),
                             ],
                           ),
-
-                          //En esta seccion encontramos la opción de crear una cuenta en la aplicación
+                          //En esta seccion encontramos el accceso para darnos
+                          //de alta o acceder como anónimo
                           Row(children: [divisorExpanded(Colors.white)]),
                           Padding(
                             padding: const EdgeInsets.only(bottom: 10.0),
@@ -275,7 +289,7 @@ class _MainState extends State<Main> {
   }
 
   //Metodo encargado de cambiar el estado del CheckBox
-  void onChanged(bool? value) {
+  void _onChanged(bool? value) {
     setState(() {
       if (checkBoxValue) {
         checkBoxValue = false;
