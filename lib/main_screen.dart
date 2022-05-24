@@ -275,7 +275,7 @@ class _MainState extends State<Main> {
     );
   }
 
-  //Metodo encargado de cargar las preferencias de la app
+  ///Metodo encargado de cargar las preferencias de la app
   void _loadPreferences() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     setState(() {
@@ -285,7 +285,7 @@ class _MainState extends State<Main> {
     });
   }
 
-  //Metodo encargado de cambiar el estado del CheckBox
+  ///Metodo encargado de cambiar el estado del CheckBox
   void _onChanged(bool? value) {
     setState(() {
       if (checkBoxValue) {
@@ -296,8 +296,8 @@ class _MainState extends State<Main> {
     });
   }
 
-  //Guarda el valor de los campos en las preferencias, el metodo será lanzado en
-  //otro hilo, debido a que no debe parar el hilo principal
+  ///Guarda el valor de los campos en las preferencias, el metodo será lanzado en
+  ///otro hilo, debido a que no debe parar el hilo principal
   Future<void> changePrefreces() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     setState(() {
@@ -313,8 +313,8 @@ class _MainState extends State<Main> {
     });
   }
 
-  //Metodo encargado de crear el botón. al presionarlo, genera la consulta
-  //para comprobar si el usuaro existe en la base de datos.
+  ///Metodo encargado de crear el botón. al presionarlo, genera la consulta
+  ///para comprobar si el usuaro existe en la base de datos.
   submit(
       _formKey, TextEditingController usuario, TextEditingController passwd) {
     return Padding(
@@ -385,7 +385,7 @@ class _MainState extends State<Main> {
     );
   }
 
-//Metodo encargado de crear un nuevo FormField
+  ///Metodo encargado de crear un nuevo FormField
   addFormField(focusName, keyName, TextEditingController controllerName, hint,
       icono, obscureText) {
     return Padding(

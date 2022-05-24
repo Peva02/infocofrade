@@ -1,7 +1,7 @@
 // ignore_for_file: import_of_legacy_library_into_null_saf
 import 'package:flutter/material.dart';
 import 'package:infocofrade/conection/conector.dart';
-import 'package:infocofrade/main.dart';
+import 'package:infocofrade/main_screen.dart';
 import 'package:infocofrade/views/itinerario_screen.dart';
 import 'package:infocofrade/views/profile_screen.dart';
 import 'package:infocofrade/views/qr_code_screen.dart';

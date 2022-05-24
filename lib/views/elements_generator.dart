@@ -17,10 +17,6 @@ divisor(lineColor) {
   );
 }
 
-//-------------------------------------------------------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------------------------------------------------------
-
 //Crea un divisor del color que se le indique que ocupara todo el ancho posible
 
 divisorExpanded(lineColor) {
@@ -45,8 +41,6 @@ divisorExpanded(lineColor) {
   );
 }
 
-//-------------------------------------------------------------------------------------------------------------------------
-
 //Es el encargado de mostrar el círculo de carga al usuario cuando realizamos una consulta en base de datos
 
 screenCircularProgress() {
@@ -57,10 +51,6 @@ screenCircularProgress() {
     ),
   );
 }
-
-//-------------------------------------------------------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------------------------------------------------------
 
 //Este método es el encargado de validar el número de teléfono, es decir que cumpla con la longitud y que sea numérico
 
@@ -79,9 +69,6 @@ validationDni(String dni) {
   }
   return false;
 }
-//-------------------------------------------------------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------------------------------------------------------
 
 ///Este método se encarga de validar el texto de la base de datos, si este está vacío lo sustituye por un texto por defecto
 validationText(String input) {
@@ -90,10 +77,6 @@ validationText(String input) {
   }
   return input;
 }
-
-//-------------------------------------------------------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------------------------------------------------------
 
 // Devolvera los divisores de cada seccion, mostrando
 // el nombre que se le pases por parametro junto con un divisor del color que se le indique

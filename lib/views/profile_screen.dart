@@ -4,7 +4,7 @@ import 'package:crypto/crypto.dart';
 
 import 'package:flutter/material.dart';
 import 'package:infocofrade/conection/conector.dart';
-import 'package:infocofrade/main.dart';
+import 'package:infocofrade/main_screen.dart';
 import 'package:infocofrade/views/nav_bar_screen.dart';
 import '../models/hermano_model.dart';
 import 'elements_generator.dart';
