@@ -6,8 +6,6 @@ import 'package:infocofrade/models/hermano_model.dart';
 import 'package:infocofrade/models/procesion_model.dart';
 import 'package:infocofrade/models/qr_model.dart';
 
-import '../main.dart';
-
 class Conector {
   late String domain = 'http://iesayala.ddns.net/eduardo/';
 
@@ -137,5 +135,14 @@ class Conector {
       qrCode.fecha = data[0]['fecha'];
     }
     return qrCode;
+  }
+}
+
+class MyHttpOverrides extends HttpOverrides {
+  @override
+  HttpClient createHttpClient(SecurityContext? context) {
+    return super.createHttpClient(context)
+      ..badCertificateCallback =
+          (X509Certificate cert, String host, int port) => true;
   }
 }

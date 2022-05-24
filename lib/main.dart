@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'dart:convert';
 import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
@@ -63,16 +61,6 @@ class _MainState extends State<Main> {
   //Instancia del controlador, del cual accedemos a los metodos para solicitar
   //información de la base de datos
   Conector conector = Conector();
-
-  //Metodo encargado de cargar las preferencias de la app
-  void _loadPreferences() async {
-    SharedPreferences preferences = await SharedPreferences.getInstance();
-    setState(() {
-      checkBoxValue = preferences.getBool("checkBox")!;
-      dniText.text = preferences.getString("dni")!;
-      contraseniaText.text = preferences.getString("passwd")!;
-    });
-  }
 
   //Validamos los campos al perder y recuperar el foco en el FormField
   @override
@@ -162,8 +150,7 @@ class _MainState extends State<Main> {
                                     'Contraseña',
                                     const Icon(Icons.key, color: Colors.grey),
                                     true),
-                                submit(_formKey, context, dniText,
-                                    contraseniaText),
+                                submit(_formKey, dniText, contraseniaText),
                               ],
                             ),
                           ),
@@ -271,7 +258,7 @@ class _MainState extends State<Main> {
                                       ),
                                     ),
                                   ),
-                                )
+                                ),
                               ],
                             ),
                           )
@@ -288,6 +275,16 @@ class _MainState extends State<Main> {
     );
   }
 
+  //Metodo encargado de cargar las preferencias de la app
+  void _loadPreferences() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    setState(() {
+      checkBoxValue = preferences.getBool("checkBox")!;
+      dniText.text = preferences.getString("dni")!;
+      contraseniaText.text = preferences.getString("passwd")!;
+    });
+  }
+
   //Metodo encargado de cambiar el estado del CheckBox
   void _onChanged(bool? value) {
     setState(() {
@@ -299,8 +296,8 @@ class _MainState extends State<Main> {
     });
   }
 
-  //Guarda el valor de los campos en las preferencias, el metodo será Future,
-  //por si falla la carga, que no bloque la app
+  //Guarda el valor de los campos en las preferencias, el metodo será lanzado en
+  //otro hilo, debido a que no debe parar el hilo principal
   Future<void> changePrefreces() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     setState(() {
@@ -316,9 +313,10 @@ class _MainState extends State<Main> {
     });
   }
 
-  //Metodo encargado de crear el botón
-  submit(_formKey, context, TextEditingController usuario,
-      TextEditingController passwd) {
+  //Metodo encargado de crear el botón. al presionarlo, genera la consulta
+  //para comprobar si el usuaro existe en la base de datos.
+  submit(
+      _formKey, TextEditingController usuario, TextEditingController passwd) {
     return Padding(
       padding: const EdgeInsets.only(top: 8.0, bottom: 16.0),
       child: SizedBox(
@@ -386,24 +384,20 @@ class _MainState extends State<Main> {
       ),
     );
   }
-}
 
 //Metodo encargado de crear un nuevo FormField
-addFormField(focusName, keyName, TextEditingController controllerName, hint,
-    icono, obscureText) {
-  return Padding(
-    padding: const EdgeInsets.only(top: 5.0, bottom: 5.0),
-    child: SizedBox(
-      height: 80,
-      child: TextFormField(
+  addFormField(focusName, keyName, TextEditingController controllerName, hint,
+      icono, obscureText) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 5.0, bottom: 5.0),
+      child: SizedBox(
+        height: 80,
+        child: TextFormField(
           style: const TextStyle(fontFamily: "Roboto"),
           controller: controllerName,
           focusNode: focusName,
           key: keyName,
           obscureText: obscureText,
-          onChanged: (value) {
-            //print(controllerName.text);
-          },
           decoration: InputDecoration(
             filled: true,
             fillColor: Colors.white,
@@ -436,16 +430,9 @@ addFormField(focusName, keyName, TextEditingController controllerName, hint,
               return "Por favor, rellene todos los campos";
             }
             return null;
-          }),
-    ),
-  );
-}
-
-class MyHttpOverrides extends HttpOverrides {
-  @override
-  HttpClient createHttpClient(SecurityContext? context) {
-    return super.createHttpClient(context)
-      ..badCertificateCallback =
-          (X509Certificate cert, String host, int port) => true;
+          },
+        ),
+      ),
+    );
   }
 }
