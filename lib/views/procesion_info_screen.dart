@@ -147,23 +147,24 @@ class _ProcesionInfo extends State<ProcesionInfo> {
               child: Column(
                 children: [
                   CachedNetworkImage(
-                      imageUrl: procesion.urlImagen.toString(),
-                      imageBuilder: (context, imageProvider) => Container(
-                            width: MediaQuery.of(context).size.height / 3,
-                            height: MediaQuery.of(context).size.height / 2,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(15),
-                              image: DecorationImage(
-                                  image: imageProvider, fit: BoxFit.fill),
-                            ),
-                          ),
-                      placeholder: (context, url) =>
-                          const CircularProgressIndicator(),
-                      errorWidget: (context, url, error) => const Icon(
-                            Icons.church_rounded,
-                            color: Colors.white,
-                            size: 100,
-                          )),
+                    imageUrl: procesion.urlImagen.toString(),
+                    imageBuilder: (context, imageProvider) => Container(
+                      width: MediaQuery.of(context).size.height / 3,
+                      height: MediaQuery.of(context).size.height / 2,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(15),
+                        image: DecorationImage(
+                            image: imageProvider, fit: BoxFit.fill),
+                      ),
+                    ),
+                    placeholder: (context, url) =>
+                        const CircularProgressIndicator(),
+                    errorWidget: (context, url, error) => const Icon(
+                      Icons.church_rounded,
+                      color: Colors.white,
+                      size: 100,
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -259,7 +260,7 @@ class _ProcesionInfo extends State<ProcesionInfo> {
     try {
       if (!await launchUrl(Uri.parse(url))) {}
     } catch (e) {
-      //print("error");
+      null;
     }
   }
 

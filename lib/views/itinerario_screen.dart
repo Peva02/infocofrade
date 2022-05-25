@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:infocofrade/models/procesion_model.dart';
 import 'package:infocofrade/views/elements_generator.dart';
 import 'package:infocofrade/views/procesion_info_screen.dart';
-
 import '../conection/conector.dart';
+import '../db/db.dart';
 
 class Itinerario extends StatefulWidget {
   const Itinerario({Key? key}) : super(key: key);
@@ -16,14 +16,26 @@ class Itinerario extends StatefulWidget {
 class _Itinerario extends State<Itinerario> {
   final Conector conector = Conector();
   List<Procesion> listaProcesiones = [];
+  List<Procesion> sqliteProcesiones = [];
+
   @override
   void initState() {
     super.initState();
-    conector.getProcesiones().then((value) {
-      setState(() {
+    conector.getProcesiones().then(
+      (value) {
         listaProcesiones.addAll(value);
-      });
-    });
+
+        for (var i = 0; i < listaProcesiones.length; i++) {
+          DB.insert(listaProcesiones[i]);
+        }
+      },
+    );
+    DB.listProcesioens().then(
+      (value) {
+        sqliteProcesiones.clear();
+        sqliteProcesiones.addAll(value);
+      },
+    );
   }
 
   @override
@@ -52,6 +64,19 @@ class _Itinerario extends State<Itinerario> {
                     itemCount: listaProcesiones.length,
                     itemBuilder: (context, index) {
                       return cargarProcesion(listaProcesiones[index]);
+                    },
+                  ),
+                ),
+              );
+            } else if (snapshot.hasError) {
+              return Center(
+                child: SizedBox(
+                  width: 1000,
+                  child: ListView.builder(
+                    primary: false,
+                    itemCount: sqliteProcesiones.length,
+                    itemBuilder: (context, index) {
+                      return cargarProcesion(sqliteProcesiones[index]);
                     },
                   ),
                 ),

@@ -239,9 +239,8 @@ class _MainState extends State<Main> {
                                       onTap: () async {
                                         changePrefreces();
                                         canLog = false;
-                                        Hermano hermano = Hermano();
-                                        hermano =
-                                            await conector.getHermano('0');
+                                        Hermano hermano = Hermano(
+                                            nombre: 'Anónimo', apellidos: '');
 
                                         Navigator.push(
                                           context,

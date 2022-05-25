@@ -34,4 +34,19 @@ class Procesion {
     altitud = json['altitud'];
     latitud = json['latitud'];
   }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'idCofradia': idCofradia.toString(),
+      'nombre': nombre.toString(),
+      'iglesia': iglesia.toString(),
+      'urlImagen': urlImagen.toString(),
+      'telefono': telefono.toString(),
+      'descripcion': descripcion.toString(),
+      'ruta': ruta.toString(),
+      'fecha': fecha.toString(),
+      'altitud': altitud.toString(),
+      'latitud': latitud.toString()
+    };
+  }
 }
