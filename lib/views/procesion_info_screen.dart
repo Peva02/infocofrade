@@ -14,23 +14,19 @@ class ProcesionInfo extends StatefulWidget {
   State<ProcesionInfo> createState() => _ProcesionInfo();
 }
 
-//Creamos el controlador para obtener el texto del centro buscado
-
 class _ProcesionInfo extends State<ProcesionInfo> {
   late final Procesion procesion;
-
-  //Declaramos las variables de altitud y latitud que dependeran según la posición del centro
   static double latitud = 0.0, altitud = 0.0;
   static LatLng _coordenadas = LatLng(latitud, altitud);
 
-  //Declaramos la posición inicial de la cámara
+  //Declaramos la posición inicial de la cámara en el mapa
   CameraPosition _kGooglePlex = CameraPosition(
     target: _coordenadas,
     zoom: 16,
   );
 
   //Decalramos un marcador para indicar el punto donde nos encontramos
-  //y añadir el nombre y dirección del centro
+  //y añadir la localización de la procesión
   final Set<Marker> _markers = {};
 
   void _onMapCreated(GoogleMapController controller) {
@@ -52,6 +48,9 @@ class _ProcesionInfo extends State<ProcesionInfo> {
   initState() {
     super.initState();
     procesion = widget.procesion;
+    //Intenta asignar los valores de altitud y latitud de la procesión a los
+    //valores de la cámara, en caso de no poder hacerlo, dejará los valores en
+    //cero, y diremos que no se pudo obtener localización.
     try {
       latitud = double.parse(procesion.latitud!);
       altitud = double.parse(procesion.altitud!);
@@ -65,8 +64,6 @@ class _ProcesionInfo extends State<ProcesionInfo> {
       altitud = 0;
     }
   }
-
-  //-------------------------------------------------------------------------------------------------------------------------
 
   @override
   Widget build(BuildContext context) => Scaffold(
@@ -87,7 +84,6 @@ class _ProcesionInfo extends State<ProcesionInfo> {
           ),
           centerTitle: true,
         ),
-        //Centraremos todo el contenido de la pantalla
         body: Padding(
           padding: const EdgeInsets.only(top: 10, left: 10, right: 10),
           child: Center(
@@ -95,12 +91,10 @@ class _ProcesionInfo extends State<ProcesionInfo> {
               width: 1000,
               child: Column(
                 children: [
-                  //ListView que ocupara el resto de la pantalla con los datos del centro
                   Expanded(
                     child: RefreshIndicator(
-                      onRefresh: () async {
-                        setState(() {});
-                      },
+                      //TODO reacarga pantalla infoProcesion
+                      onRefresh: () async {},
                       child: ListView(
                         children: [
                           Column(
@@ -119,16 +113,14 @@ class _ProcesionInfo extends State<ProcesionInfo> {
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
-            callprocesion();
+            callCofradia();
           },
           backgroundColor: Colors.amber.shade800,
           child: const Icon(Icons.call),
         ),
       );
 
-  //-------------------------------------------------------------------------------------------------------------------------
-
-  ///Devuelve un contendor con los datos principales del centro
+  ///Devuelve un contendor con los datos de la procesión
   Column datos() => Column(
         children: [
           Padding(
@@ -254,22 +246,11 @@ class _ProcesionInfo extends State<ProcesionInfo> {
         ],
       );
 
-  //-------------------------------------------------------------------------------------------------------------------------
-  ///Este método es el encargado de lanzar las url que le pasemos, devolviendo un error si no es válida
-  void _launchURL(String url) async {
-    try {
-      if (!await launchUrl(Uri.parse(url))) {}
-    } catch (e) {
-      null;
-    }
-  }
-
-  ///Abre el telefono de nuestro dispositivo indicando el numero del centro
-  void callprocesion() {
+  ///Abre el telefono de nuestro dispositivo indicando el numero de la cofradía
+  void callCofradia() async {
     if (validationTelf(procesion.telefono.toString())) {
-      _launchURL(
-        'tel://' + procesion.telefono.toString(),
-      );
+      if (await launchUrl(
+          Uri.parse('tel://' + procesion.telefono.toString()))) {}
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -303,6 +284,8 @@ class _ProcesionInfo extends State<ProcesionInfo> {
     }
   }
 
+  ///Comprueba si existen datos de localización de la procesión; si existen,
+  ///devolvera la posicion, en caso contrario(0,0), devolvera un mensaje de error
   googleMaps() {
     if (procesion.latitud != '0' && procesion.altitud != '0') {
       return GoogleMap(

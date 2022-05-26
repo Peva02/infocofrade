@@ -1,10 +1,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:infocofrade/db/db.dart';
+import 'package:infocofrade/dbExterna/conector.dart';
 import 'package:infocofrade/models/procesion_model.dart';
 import 'package:infocofrade/views/elements_generator.dart';
 import 'package:infocofrade/views/procesion_info_screen.dart';
-import '../conection/conector.dart';
-import '../db/db.dart';
 
 class Itinerario extends StatefulWidget {
   const Itinerario({Key? key}) : super(key: key);
@@ -21,15 +21,24 @@ class _Itinerario extends State<Itinerario> {
   @override
   void initState() {
     super.initState();
+
+    ///Carga el listado de procesiones de la base de datos
     conector.getProcesiones().then(
       (value) {
         listaProcesiones.addAll(value);
 
+        //Recorre al lista de procesiones obtenidas, y ejecuta un insert
+        //en la base de datos local por cada procesion obtenida
         for (var i = 0; i < listaProcesiones.length; i++) {
           DB.insert(listaProcesiones[i]);
         }
       },
     );
+    //Una vez cargadas las procesiones, las obtenemos de la base de datos local,
+    //y las añadimos a otra lista, de modo que si el usuario en cualquier
+    //momento pierde la conexión, podrea seguir accediendo a los datos de las
+    //mismas, menos a la imagen y la localizacón(lógicamente, debido a que
+    //no cuenta con conexión)
     DB.listProcesioens().then(
       (value) {
         sqliteProcesiones.clear();
@@ -90,22 +99,8 @@ class _Itinerario extends State<Itinerario> {
     );
   }
 
-  Icon favoriteIcon(String favorito) {
-    if (favorito == '1') {
-      return const Icon(
-        Icons.favorite,
-        color: Colors.red,
-        size: 30,
-      );
-    } else {
-      return const Icon(
-        Icons.favorite_border,
-        color: Colors.red,
-      );
-    }
-  }
-
-  cargarProcesion(Procesion procesion) {
+  ///Pasándole una lista de procesiones, la recorre y las muestra
+  Padding cargarProcesion(Procesion procesion) {
     return Padding(
       padding: const EdgeInsets.only(left: 8.0, right: 8.0),
       child: Row(

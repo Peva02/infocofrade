@@ -3,6 +3,7 @@ import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
 class DB {
+  ///Comprueba si la base de datos existe, si no, la crea.
   static Future<Database> _openDb() async {
     return openDatabase(join(await getDatabasesPath(), 'procesiones.db'),
         onCreate: (db, version) {
@@ -11,12 +12,14 @@ class DB {
     }, version: 1);
   }
 
+  ///Permite insertar datos en la base de datos,
+  ///indicandole la tabla y un objeto Map que lo generamos en el modelo
   static Future<int> insert(Procesion procesion) async {
     Database database = await _openDb();
-
     return database.insert("procesiones", procesion.toMap());
   }
 
+  ///Devuelve una lista con todas las procesiones de la base de datos local
   static Future<List<Procesion>> listProcesioens() async {
     Database database = await _openDb();
 

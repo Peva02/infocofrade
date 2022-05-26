@@ -22,6 +22,7 @@ class Procesion {
       required this.altitud,
       required this.latitud});
 
+  ///Permite crear un objeto a partir de un fichero json
   Procesion.fromJson(Map<String, dynamic> json) {
     idCofradia = json['idCofradia'];
     nombre = json['nombre'];
@@ -35,6 +36,7 @@ class Procesion {
     latitud = json['latitud'];
   }
 
+  ///Crea un objeto Map en funcion de los datos del objeto procesion
   Map<String, dynamic> toMap() {
     return {
       'idCofradia': idCofradia.toString(),

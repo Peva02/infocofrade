@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:infocofrade/conection/conector.dart';
+import 'package:infocofrade/dbExterna/conector.dart';
+import 'package:infocofrade/models/qr_model.dart';
 import 'package:qr_flutter/qr_flutter.dart';
-import '../models/qr_model.dart';
 import 'elements_generator.dart';
 
 class QR extends StatefulWidget {
@@ -93,7 +93,11 @@ class _QRState extends State<QR> {
                                     width:
                                         MediaQuery.of(context).size.width / 2,
                                     child: Card(
-                                      child: QrImage(
+                                      child:
+
+                                          ///Pasandole los datos que queramos(data),
+                                          ///genera un código qr con esos datos
+                                          QrImage(
                                         data: 'Año:' +
                                             qrCode.fecha.toString() +
                                             '\nUsuario: ' +
@@ -166,6 +170,8 @@ class _QRState extends State<QR> {
     );
   }
 
+  ///pasandole los datos del hermano, va generando un objeto
+  ///Card con los datos del mismo
   Padding dato(String titulo, String contenido) {
     return Padding(
       padding: const EdgeInsets.all(5.0),

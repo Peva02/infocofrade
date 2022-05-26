@@ -1,12 +1,11 @@
 // ignore_for_file: import_of_legacy_library_into_null_safe
 import 'dart:convert';
 import 'package:crypto/crypto.dart';
-
 import 'package:flutter/material.dart';
-import 'package:infocofrade/conection/conector.dart';
+import 'package:infocofrade/dbExterna/conector.dart';
 import 'package:infocofrade/main_screen.dart';
 import 'package:infocofrade/views/nav_bar_screen.dart';
-import '../models/hermano_model.dart';
+import 'package:infocofrade/models/hermano_model.dart';
 import 'elements_generator.dart';
 
 class Profile extends StatefulWidget {
@@ -19,21 +18,21 @@ class Profile extends StatefulWidget {
 
 class _ProfileState extends State<Profile> {
   final Conector conector = Conector();
+  late Hermano hermano;
 
-  //Creamos los controladres para obtener el texto de los campos de los formularios
+  //Creamos TextEditingController para obtener el texto de los campos de los formularios
   final TextEditingController _dniText = TextEditingController();
   final TextEditingController _tlfText = TextEditingController();
   final TextEditingController _contraseniaText = TextEditingController();
   final TextEditingController _confirmcontraseniaText = TextEditingController();
   final TextEditingController _nombreText = TextEditingController();
   final TextEditingController _apellidoText = TextEditingController();
-  final _formKey = GlobalKey<FormState>();
-  late final Hermano hermano;
 
   //Instanciamos los focusNode para poder hacer referencia al foco de cada FormField
   late FocusNode tlf, dni, contrasenia, confirmcontrasenia, nombre, apellido;
 
   //Instanciamos una key para cada uno de los FormField, para poder verificar los campos
+  final _formKey = GlobalKey<FormState>();
   final _dniKey = GlobalKey<FormFieldState>();
   final _tlfKey = GlobalKey<FormFieldState>();
   final _contraseniaKey = GlobalKey<FormFieldState>();
@@ -44,7 +43,6 @@ class _ProfileState extends State<Profile> {
   //Declaramos el checkBox para mantener la sesion iniciada (false/desmarcado por defecto)
   bool checkBoxValue = false;
 
-  //Validamos los campos al perder y recuperar el foco en el FormField
   @override
   void initState() {
     super.initState();
@@ -94,9 +92,8 @@ class _ProfileState extends State<Profile> {
                       ),
                       labelText(
                           null, "Datos Personales", Colors.white, Colors.white),
-
-                      //Creamos el formulario donde estableceremmos el contenido de este
-                      //Llamamos a los métodos encargados de añadir los campos y el botón de submit
+                      //Creamos el formulario donde estableceremos el contenido de este
+                      //Llamamos a los métodos encargados de añadir los campos y los botones
                       Form(
                         key: _formKey,
                         child: Column(
@@ -184,10 +181,9 @@ class _ProfileState extends State<Profile> {
     );
   }
 
-//-------------------------------------------------------------------------------------------------------------------------
-
-//Metodo encargado de crear un nuevo FormField
-  addFormField(focusName, keyName, controllerName, hint, icono, obscureText) {
+  ///Metodo encargado de crear un nuevo FormField
+  Padding addFormField(
+      focusName, keyName, controllerName, hint, icono, obscureText) {
     return Padding(
       padding: const EdgeInsets.only(top: 0.5, bottom: 0.5),
       child: SizedBox(
@@ -225,7 +221,8 @@ class _ProfileState extends State<Profile> {
             ),
             prefixIcon: icono,
           ),
-          //Realizamos la validacion y comprobamos si el FormField se encuentra vacío
+          //Realizamos la validacion y comprobamos si el FormField cumple
+          //con las restricciones
           validator: (value) {
             if (obscureText &&
                 _contraseniaText.text != _confirmcontraseniaText.text) {
@@ -246,8 +243,8 @@ class _ProfileState extends State<Profile> {
     );
   }
 
-//Metodo encargado de crear el botón
-  button(_formKey, text, colorButton, colorElem) {
+  ///Metodo encargado de crear los botones
+  Padding button(_formKey, text, colorButton, colorElem) {
     return Padding(
       padding:
           const EdgeInsets.only(top: 20.0, bottom: 25.0, left: 5.0, right: 5.0),
@@ -332,7 +329,7 @@ class _ProfileState extends State<Profile> {
                         ),
                       ),
                       TextButton(
-                        onPressed: () => clear(),
+                        onPressed: () => cancel(),
                         child: const Text('Si'),
                       ),
                     ],
@@ -395,7 +392,9 @@ class _ProfileState extends State<Profile> {
     );
   }
 
-  modificarValues(_formKey, context) async {
+  ///Cargas los datos introducidos en los campos, en un objeto "Hermano" y
+  ///llama al metodo encargado de actualizar los datos en la base de datos
+  void modificarValues(_formKey, context) async {
     if (_formKey.currentState!.validate()) {
       setState(
         () {
@@ -419,63 +418,20 @@ class _ProfileState extends State<Profile> {
         },
       );
       await conector.updateHermano(hermano).then(
-            (value) => ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                backgroundColor: Colors.green,
-                content: Row(
-                  children: const [
-                    Icon(
-                      Icons.sentiment_satisfied,
-                      size: 40,
-                      color: Colors.white,
-                    ),
-                    Expanded(
-                      child: Text(
-                        '¡Usuario actualiazdo correctamente!',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                  ],
-                ),
-                behavior: SnackBarBehavior.floating,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    side: const BorderSide(color: Colors.white)),
-                margin: EdgeInsets.only(
-                    bottom: MediaQuery.of(context).size.height - 100,
-                    right: 20,
-                    left: 20),
-              ),
-            ),
-          );
-      clear();
-    } else {
-      showSnackBar('Compruebe la información de los campos.');
-      Navigator.pop(context);
-    }
-  }
-
-  deleteAcount(context) async {
-    await conector.deleteHermano(hermano).then(
-      (bool value) {
-        if (value) {
-          Navigator.of(context).pushAndRemoveUntil(
-              MaterialPageRoute(builder: (context) => const Main()),
-              (route) => false);
+        (value) {
           return ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               backgroundColor: Colors.green,
               content: Row(
                 children: const [
                   Icon(
-                    Icons.sentiment_dissatisfied_outlined,
+                    Icons.sentiment_satisfied,
                     size: 40,
                     color: Colors.white,
                   ),
                   Expanded(
                     child: Text(
-                      'Esperamos que vuelva pronto.',
+                      '¡Usuario actualiazdo correctamente!',
                       textAlign: TextAlign.center,
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
@@ -492,77 +448,152 @@ class _ProfileState extends State<Profile> {
                   left: 20),
             ),
           );
-        } else {
-          Navigator.of(context).pop();
-          return ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              backgroundColor: Colors.red,
-              content: Row(
-                children: const [
-                  Icon(
-                    Icons.sentiment_neutral,
-                    size: 40,
-                    color: Colors.white,
+        },
+      ).catchError((err) {
+        return ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            backgroundColor: Colors.red,
+            content: Row(
+              children: const [
+                Icon(
+                  Icons.warning_amber_rounded,
+                  size: 40,
+                  color: Colors.white,
+                ),
+                Expanded(
+                  child: Text(
+                    'Ocurrió un error inesperado',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontWeight: FontWeight.bold),
                   ),
-                  Expanded(
-                    child: Text(
-                      'Sucedió un error al eliminar su cuenta.',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                ],
-              ),
-              behavior: SnackBarBehavior.floating,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                  side: const BorderSide(color: Colors.white)),
-              margin: EdgeInsets.only(
-                  bottom: MediaQuery.of(context).size.height - 100,
-                  right: 20,
-                  left: 20),
+                ),
+              ],
             ),
-          );
-        }
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+                side: const BorderSide(color: Colors.white)),
+            margin: EdgeInsets.only(
+                bottom: MediaQuery.of(context).size.height - 100,
+                right: 20,
+                left: 20),
+          ),
+        );
+      });
+      cancel();
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          backgroundColor: Colors.amber.shade700,
+          content: Row(
+            children: const [
+              Icon(
+                Icons.sentiment_dissatisfied,
+                size: 40,
+                color: Colors.white,
+              ),
+              Expanded(
+                child: Text(
+                  'Compruebe la información de los campos.',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+              ),
+            ],
+          ),
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+              side: const BorderSide(color: Colors.white)),
+          margin: EdgeInsets.only(
+              bottom: MediaQuery.of(context).size.height - 100,
+              right: 20,
+              left: 20),
+        ),
+      );
+      Navigator.pop(context);
+    }
+  }
+
+  ///Llama al metodo encargado de eliminar usuario,
+  ///y elimina el hermano indicado por parámetros
+  void deleteAcount(context) async {
+    await conector.deleteHermano(hermano).then(
+      (bool value) {
+        Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(builder: (context) => const Main()),
+            (route) => false);
+        return ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            backgroundColor: Colors.green,
+            content: Row(
+              children: const [
+                Icon(
+                  Icons.sentiment_dissatisfied_outlined,
+                  size: 40,
+                  color: Colors.white,
+                ),
+                Expanded(
+                  child: Text(
+                    'Esperamos que vuelva pronto.',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ],
+            ),
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+                side: const BorderSide(color: Colors.white)),
+            margin: EdgeInsets.only(
+                bottom: MediaQuery.of(context).size.height - 100,
+                right: 20,
+                left: 20),
+          ),
+        );
+      },
+    ).catchError(
+      (error) {
+        Navigator.of(context).pop();
+        return ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            backgroundColor: Colors.red,
+            content: Row(
+              children: const [
+                Icon(
+                  Icons.warning_amber_rounded,
+                  size: 40,
+                  color: Colors.white,
+                ),
+                Expanded(
+                  child: Text(
+                    'Sucedió un error al eliminar su cuenta.',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ],
+            ),
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+                side: const BorderSide(color: Colors.white)),
+            margin: EdgeInsets.only(
+                bottom: MediaQuery.of(context).size.height - 100,
+                right: 20,
+                left: 20),
+          ),
+        );
       },
     );
   }
 
-  clear() {
+  ///Elimina la pantalla actual y redirige al usuario a la pantalla
+  ///de itinerario
+  void cancel() {
     Navigator.of(context).pushAndRemoveUntil(
         MaterialPageRoute(builder: (context) => Navegation(hermano)),
         (route) => false);
-  }
-
-  showSnackBar(msg) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        backgroundColor: Colors.amber.shade700,
-        content: Row(
-          children: [
-            const Icon(
-              Icons.sentiment_dissatisfied,
-              size: 40,
-              color: Colors.white,
-            ),
-            Expanded(
-              child: Text(
-                msg,
-                textAlign: TextAlign.center,
-                style: const TextStyle(fontWeight: FontWeight.bold),
-              ),
-            ),
-          ],
-        ),
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-            side: const BorderSide(color: Colors.white)),
-        margin: EdgeInsets.only(
-            bottom: MediaQuery.of(context).size.height - 100,
-            right: 20,
-            left: 20),
-      ),
-    );
   }
 }

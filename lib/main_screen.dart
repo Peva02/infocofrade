@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
-import 'package:infocofrade/conection/conector.dart';
+import 'package:infocofrade/dbExterna/conector.dart';
 import 'package:infocofrade/models/hermano_model.dart';
 import 'package:infocofrade/views/elements_generator.dart';
 import 'package:infocofrade/views/nav_bar_screen.dart';
@@ -329,8 +329,42 @@ class _MainState extends State<Main> {
             side: const BorderSide(color: Colors.white, width: 2),
           ),
           onPressed: () async {
-            canLog = await conector.canLogin(
-                usuario.text, md5.convert(utf8.encode(passwd.text)).toString());
+            canLog = await conector
+                .canLogin(usuario.text,
+                    md5.convert(utf8.encode(passwd.text)).toString())
+                .catchError(
+              (error) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    backgroundColor: Colors.red,
+                    content: Row(
+                      children: const [
+                        Icon(
+                          Icons.wifi_off_rounded,
+                          size: 40,
+                          color: Colors.white,
+                        ),
+                        Expanded(
+                          child: Text(
+                            'No se pudo establecer conexión con el servidor.',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ],
+                    ),
+                    behavior: SnackBarBehavior.floating,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        side: const BorderSide(color: Colors.white)),
+                    margin: EdgeInsets.only(
+                        bottom: MediaQuery.of(context).size.height - 100,
+                        right: 20,
+                        left: 20),
+                  ),
+                );
+              },
+            );
 
             if (_formKey.currentState!.validate()) {
               if (canLog) {

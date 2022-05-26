@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 
-//Crea un divisor del color que se le indique que ocupara todo el ancho posible
-
-divisor(lineColor) {
+///Crea un divisor del color que se le indique que ocupara todo el ancho posible
+Row divisor(lineColor) {
   return Row(
     mainAxisSize: MainAxisSize.max,
     children: [
@@ -17,9 +16,8 @@ divisor(lineColor) {
   );
 }
 
-//Crea un divisor del color que se le indique que ocupara todo el ancho posible
-
-divisorExpanded(lineColor) {
+///Crea un divisor del color que se le indique que ocupara todo el ancho posible
+Expanded divisorExpanded(lineColor) {
   return Expanded(
     child: Column(
       children: [
@@ -41,9 +39,9 @@ divisorExpanded(lineColor) {
   );
 }
 
-//Es el encargado de mostrar el círculo de carga al usuario cuando realizamos una consulta en base de datos
-
-screenCircularProgress() {
+///Es el encargado de mostrar el círculo de carga al usuario cuando
+///realizamos alguna operacion que necesite espera.
+Center screenCircularProgress() {
   return Center(
     child: CircularProgressIndicator(
       backgroundColor: Colors.amber.shade700,
@@ -52,9 +50,9 @@ screenCircularProgress() {
   );
 }
 
-//Este método es el encargado de validar el número de teléfono, es decir que cumpla con la longitud y que sea numérico
-
-validationTelf(String telefono) {
+///Este método es el encargado de validar el número de teléfono,
+///es decir que cumpla con la longitud y que sea numérico
+bool validationTelf(String telefono) {
   RegExp _numeric = RegExp(r'[ -()+]?[0-9]+$');
   if (!_numeric.hasMatch(telefono) || telefono.length != 9) {
     return false;
@@ -62,7 +60,9 @@ validationTelf(String telefono) {
   return true;
 }
 
-validationDni(String dni) {
+///Este método es el encargado de validar el patron DNI, solo valida el patron,
+///no su existencia
+bool validationDni(String dni) {
   var regExp = RegExp(r'^[\d]{8}[A-Za-z]{1}$');
   if (regExp.hasMatch(dni)) {
     return true;
@@ -70,17 +70,19 @@ validationDni(String dni) {
   return false;
 }
 
-///Este método se encarga de validar el texto de la base de datos, si este está vacío lo sustituye por un texto por defecto
-validationText(String input) {
+///Este método se encarga de validar el texto obtenido de la base de datos,
+///si este está vacío lo sustituye por un texto por defecto
+///(n/a - not available - no disponible)
+String validationText(String input) {
   if (input.trim().isEmpty || input == 'null') {
     input = 'N/A';
   }
   return input;
 }
 
-// Devolvera los divisores de cada seccion, mostrando
-// el nombre que se le pases por parametro junto con un divisor del color que se le indique
-labelText(icon, text, colorText, colorLine) => Row(
+/// Devolvera los divisores de cada seccion, mostrando
+/// el nombre que se le pases por parametro junto con un divisor del color que se le indique
+Row labelText(icon, text, colorText, colorLine) => Row(
       children: [
         Padding(
           padding: const EdgeInsets.only(right: 8.0),
@@ -94,5 +96,3 @@ labelText(icon, text, colorText, colorLine) => Row(
         divisorExpanded(colorLine),
       ],
     );
-
-//-------------------------------------------------------------------------------------------------------------------------

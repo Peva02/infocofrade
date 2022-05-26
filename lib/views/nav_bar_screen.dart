@@ -1,12 +1,11 @@
-// ignore_for_file: import_of_legacy_library_into_null_saf
 import 'package:flutter/material.dart';
-import 'package:infocofrade/conection/conector.dart';
+import 'package:infocofrade/dbExterna/conector.dart';
 import 'package:infocofrade/main_screen.dart';
+import 'package:infocofrade/models/hermano_model.dart';
+import 'package:infocofrade/models/qr_model.dart';
 import 'package:infocofrade/views/itinerario_screen.dart';
 import 'package:infocofrade/views/profile_screen.dart';
 import 'package:infocofrade/views/qr_code_screen.dart';
-import '../models/hermano_model.dart';
-import '../models/qr_model.dart';
 
 class Navegation extends StatefulWidget {
   const Navegation(this.hermano, {Key? key}) : super(key: key);
@@ -29,8 +28,9 @@ class _Navegation extends State<Navegation> {
 
   int _selectedDrawItem = 2;
 
-  ///Dependiendo de la opción seleccionada, carga la pantalla seleccionada en el body de esta pantalla
-  _getDrawerItemWidget(int pos) {
+  ///Dependiendo de la opción seleccionada, carga la pantalla seleccionada
+  ///en el body de esta pantalla
+  dynamic _getDrawerItemWidget(int pos) {
     switch (pos) {
       case 0:
         return Profile(hermano);
@@ -41,8 +41,8 @@ class _Navegation extends State<Navegation> {
     }
   }
 
-  ///Cambia la opcion seleccionada y cierra el menu de navegación
-  _onSelectedItem(int pos) {
+  ///Cambia la opcion seleccionada y cierra el menú de navegación
+  void _onSelectedItem(int pos) {
     setState(() {
       if (_selectedDrawItem != pos) {
         _selectedDrawItem = pos;
@@ -155,8 +155,9 @@ class _Navegation extends State<Navegation> {
     );
   }
 
-  ///Comprueba que el usuario no sera anónimo, en cuyo caso no podra abrir la pantalla de "Perfil"
-  showProfileOption(int pos) {
+  ///Comprueba que el usuario no sea anónimo, en cuyo caso,
+  /// no podra abrir la pantalla de "Perfil", ni "Qr"
+  void showProfileOption(int pos) {
     if (canLog == false) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(

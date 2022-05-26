@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
-import 'package:infocofrade/conection/conector.dart';
+import 'package:infocofrade/dbExterna/conector.dart';
 import 'package:infocofrade/models/hermano_model.dart';
 import 'package:infocofrade/views/elements_generator.dart';
 
@@ -12,30 +12,29 @@ class Signup extends StatefulWidget {
   State<Signup> createState() => _SignupState();
 }
 
-String passOne = "", passTwo = "";
-
 class _SignupState extends State<Signup> {
   final Conector conector = Conector();
   late Hermano hermano;
-  final _formKey = GlobalKey<FormState>();
 
-  //Creamos dos controladres para obtener el texto de los FormFields, uno para el usuario y otro para la contraseña
-  final TextEditingController _nombreText = TextEditingController();
-  final TextEditingController _apellidoText = TextEditingController();
+  //Creamos TextEditingController para obtener el texto de los campos de los formularios
   final TextEditingController _dniText = TextEditingController();
   final TextEditingController _tlfText = TextEditingController();
   final TextEditingController _contraseniaText = TextEditingController();
   final TextEditingController _confirmcontraseniaText = TextEditingController();
+  final TextEditingController _nombreText = TextEditingController();
+  final TextEditingController _apellidoText = TextEditingController();
 
   //Instanciamos los focusNode para poder hacer referencia al foco de cada FormField
-  late FocusNode nombre, apellido, dni, tlf, contrasenia, confirmcontrasenia;
-  //Instanciamos una key para cada uno de los FormField
-  final _nombreKey = GlobalKey<FormFieldState>();
-  final _apellidoKey = GlobalKey<FormFieldState>();
+  late FocusNode tlf, dni, contrasenia, confirmcontrasenia, nombre, apellido;
+
+  //Instanciamos una key para cada uno de los FormField, para poder verificar los campos
+  final _formKey = GlobalKey<FormState>();
   final _dniKey = GlobalKey<FormFieldState>();
   final _tlfKey = GlobalKey<FormFieldState>();
   final _contraseniaKey = GlobalKey<FormFieldState>();
   final _confirmcontraseniaKey = GlobalKey<FormFieldState>();
+  final _nombreKey = GlobalKey<FormFieldState>();
+  final _apellidoKey = GlobalKey<FormFieldState>();
 
   //Validamos los campos al perder y recuperar el foco en el FormField
   @override
@@ -49,7 +48,7 @@ class _SignupState extends State<Signup> {
     contrasenia = FocusNode();
     confirmcontrasenia = FocusNode();
 
-    //Validamos contraseña
+    //Validamos campos al perder el foco
     nombre.addListener(() {
       if (nombre.hasFocus || !nombre.hasFocus) {
         _nombreKey.currentState?.validate();
@@ -72,14 +71,12 @@ class _SignupState extends State<Signup> {
     });
     contrasenia.addListener(() {
       if (contrasenia.hasFocus || !contrasenia.hasFocus) {
-        passOne = _contraseniaText.text;
         _contraseniaKey.currentState?.validate();
         _confirmcontraseniaKey.currentState?.validate();
       }
     });
     confirmcontrasenia.addListener(() {
       if (confirmcontrasenia.hasFocus || !confirmcontrasenia.hasFocus) {
-        passTwo = _confirmcontraseniaText.text;
         _confirmcontraseniaKey.currentState?.validate();
         _contraseniaKey.currentState?.validate();
       }
@@ -150,7 +147,6 @@ class _SignupState extends State<Signup> {
                               divisorExpanded(Colors.white),
                             ],
                           ),
-                          //Creamos el formulario donde estableceremmos el contenido de este
                           Form(
                             key: _formKey,
                             child: Column(
@@ -222,7 +218,7 @@ class _SignupState extends State<Signup> {
     );
   }
 
-//Metodo encargado de crear el botón
+  ///Metodo encargado de crear el botón submit
   submit(_formKey) {
     return Padding(
       padding: const EdgeInsets.only(top: 20.0, bottom: 16.0),
@@ -388,9 +384,9 @@ class _SignupState extends State<Signup> {
     );
   }
 
-//Metodo encargado de crear un nuevo FormField
-  addFormField(focusName, keyName, controllerName, hint, icono, keyboradType,
-      obscureText) {
+  ///Metodo encargado de crear un nuevo FormField
+  Padding addFormField(focusName, keyName, controllerName, hint, icono,
+      keyboradType, obscureText) {
     return Padding(
       padding: const EdgeInsets.only(top: 0.5, bottom: 0.5),
       child: SizedBox(
@@ -434,7 +430,8 @@ class _SignupState extends State<Signup> {
             validator: (value) {
               if (value == null || value.isEmpty) {
                 return 'Por favor, rellene todos los campos';
-              } else if (obscureText && passOne != passTwo) {
+              } else if (obscureText &&
+                  _contraseniaText.text != _confirmcontraseniaText.text) {
                 return 'Las contraseñas deben coincidir';
               }
               return null;
