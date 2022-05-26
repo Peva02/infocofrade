@@ -309,7 +309,39 @@ class _SignupState extends State<Signup> {
                 );
                 return;
               }
-              bool insert = await conector.insertHermano(hermano);
+              bool insert = await conector.insertHermano(hermano).catchError(
+                (error) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      backgroundColor: Colors.red,
+                      content: Row(
+                        children: const [
+                          Icon(
+                            Icons.wifi_off_rounded,
+                            size: 40,
+                            color: Colors.white,
+                          ),
+                          Expanded(
+                            child: Text(
+                              'No se pudo establecer conexión con el servidor.',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        ],
+                      ),
+                      behavior: SnackBarBehavior.floating,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          side: const BorderSide(color: Colors.white)),
+                      margin: EdgeInsets.only(
+                          bottom: MediaQuery.of(context).size.height - 100,
+                          right: 20,
+                          left: 20),
+                    ),
+                  );
+                },
+              );
 
               if (insert) {
                 ScaffoldMessenger.of(context).showSnackBar(

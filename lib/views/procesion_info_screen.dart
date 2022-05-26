@@ -85,25 +85,21 @@ class _ProcesionInfo extends State<ProcesionInfo> {
           centerTitle: true,
         ),
         body: Padding(
-          padding: const EdgeInsets.only(top: 10, left: 10, right: 10),
+          padding: const EdgeInsets.only(left: 10, right: 10),
           child: Center(
             child: SizedBox(
               width: 1000,
               child: Column(
                 children: [
                   Expanded(
-                    child: RefreshIndicator(
-                      //TODO reacarga pantalla infoProcesion
-                      onRefresh: () async {},
-                      child: ListView(
-                        children: [
-                          Column(
-                            children: [
-                              datos(),
-                            ],
-                          ),
-                        ],
-                      ),
+                    child: ListView(
+                      children: [
+                        Column(
+                          children: [
+                            datos(),
+                          ],
+                        ),
+                      ],
                     ),
                   ),
                 ],
@@ -124,7 +120,7 @@ class _ProcesionInfo extends State<ProcesionInfo> {
   Column datos() => Column(
         children: [
           Padding(
-            padding: const EdgeInsets.only(top: 8.0),
+            padding: const EdgeInsets.only(top: 18.0),
             child: Text(
               validationText(procesion.nombre.toString()),
               style: const TextStyle(
@@ -286,10 +282,12 @@ class _ProcesionInfo extends State<ProcesionInfo> {
 
   ///Comprueba si existen datos de localización de la procesión; si existen,
   ///devolvera la posicion, en caso contrario(0,0), devolvera un mensaje de error
-  googleMaps() {
+
+  Widget googleMaps() {
     if (procesion.latitud != '0' && procesion.altitud != '0') {
       return GoogleMap(
         markers: _markers,
+        myLocationEnabled: true,
         mapType: MapType.normal,
         initialCameraPosition: _kGooglePlex,
         onMapCreated: (GoogleMapController controller) {

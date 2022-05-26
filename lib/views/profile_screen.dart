@@ -78,7 +78,7 @@ class _ProfileState extends State<Profile> {
                           SizedBox(
                             child: Center(
                               child: Text(
-                                '¡Hola, ' + hermano.nombre.toString() + '!',
+                                '¡ Hola ' + hermano.nombre.toString() + ' !',
                                 style: const TextStyle(
                                     color: Colors.white,
                                     fontSize: 25,
@@ -247,7 +247,7 @@ class _ProfileState extends State<Profile> {
   Padding button(_formKey, text, colorButton, colorElem) {
     return Padding(
       padding:
-          const EdgeInsets.only(top: 20.0, bottom: 25.0, left: 5.0, right: 5.0),
+          const EdgeInsets.only(top: 10.0, bottom: 25.0, left: 5.0, right: 5.0),
       child: SizedBox(
         height: 40,
         width: MediaQuery.of(context).size.width,
