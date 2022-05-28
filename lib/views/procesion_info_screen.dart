@@ -1,6 +1,9 @@
 // ignore_for_file: import_of_legacy_library_into_null_safe,
+import 'dart:async';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:infocofrade/dbExterna/conector.dart';
 import 'package:infocofrade/models/procesion_model.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -18,6 +21,8 @@ class _ProcesionInfo extends State<ProcesionInfo> {
   late final Procesion procesion;
   static double latitud = 0.0, altitud = 0.0;
   static LatLng _coordenadas = LatLng(latitud, altitud);
+  final Completer<GoogleMapController> _controller = Completer();
+  Conector db = Conector();
 
   //Declaramos la posición inicial de la cámara en el mapa
   CameraPosition _kGooglePlex = CameraPosition(
@@ -28,8 +33,9 @@ class _ProcesionInfo extends State<ProcesionInfo> {
   //Decalramos un marcador para indicar el punto donde nos encontramos
   //y añadir la localización de la procesión
   final Set<Marker> _markers = {};
+  late final Timer perdirLocalizacion;
 
-  void _onMapCreated(GoogleMapController controller) {
+  void _onMapCreated() {
     setState(() {
       _markers.add(
         Marker(
@@ -63,6 +69,18 @@ class _ProcesionInfo extends State<ProcesionInfo> {
       latitud = 0;
       altitud = 0;
     }
+    perdirLocalizacion = Timer.periodic(const Duration(seconds: 1), (timer) {
+      getPosition();
+
+      setState(() {});
+    });
+    _onMapCreated();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    perdirLocalizacion.cancel();
   }
 
   @override
@@ -84,27 +102,41 @@ class _ProcesionInfo extends State<ProcesionInfo> {
           ),
           centerTitle: true,
         ),
-        body: Padding(
-          padding: const EdgeInsets.only(left: 10, right: 10),
-          child: Center(
-            child: SizedBox(
-              width: 1000,
-              child: Column(
-                children: [
-                  Expanded(
-                    child: ListView(
-                      children: [
-                        Column(
+        body: RefreshIndicator(
+          onRefresh: () async {},
+          child: FutureBuilder(
+            future: db.getLocationProcesion(procesion.idCofradia.toString()),
+            builder: (BuildContext context, AsyncSnapshot snapshot) {
+              if (snapshot.hasData) {
+                return Center(
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 10, right: 10),
+                    child: Center(
+                      child: SizedBox(
+                        width: 1000,
+                        child: Column(
                           children: [
-                            datos(),
+                            Expanded(
+                              child: ListView(
+                                children: [
+                                  Column(
+                                    children: [
+                                      datos(),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
                           ],
                         ),
-                      ],
+                      ),
                     ),
                   ),
-                ],
-              ),
-            ),
+                );
+              } else {
+                return screenCircularProgress();
+              }
+            },
           ),
         ),
         floatingActionButton: FloatingActionButton(
@@ -291,7 +323,7 @@ class _ProcesionInfo extends State<ProcesionInfo> {
         mapType: MapType.normal,
         initialCameraPosition: _kGooglePlex,
         onMapCreated: (GoogleMapController controller) {
-          _onMapCreated(controller);
+          _controller.complete(controller);
         },
       );
     } else {
@@ -324,5 +356,41 @@ class _ProcesionInfo extends State<ProcesionInfo> {
         ),
       );
     }
+  }
+
+  getPosition() async {
+    await db
+        .getLocationProcesion(procesion.idCofradia.toString())
+        .then((value) {
+      procesion.latitud = value[1].toString();
+      procesion.altitud = value[0].toString();
+    });
+    try {
+      latitud = double.parse(procesion.latitud!);
+      altitud = double.parse(procesion.altitud!);
+      _markers.clear();
+      _coordenadas = LatLng(latitud, altitud);
+      _markers.add(
+        Marker(
+          markerId: const MarkerId('id-1'),
+          position: _coordenadas,
+          infoWindow: InfoWindow(
+            title: "Localización",
+            snippet: procesion.nombre.toString(),
+          ),
+        ),
+      );
+      _kGooglePlex = CameraPosition(
+        target: _coordenadas,
+        zoom: 16,
+      );
+    } catch (e) {
+      latitud = 0;
+      altitud = 0;
+    }
+    setState(() {});
+
+    final GoogleMapController controller = await _controller.future;
+    controller.animateCamera(CameraUpdate.newCameraPosition(_kGooglePlex));
   }
 }

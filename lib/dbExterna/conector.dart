@@ -139,6 +139,22 @@ class Conector {
     }
     return qrCode;
   }
+
+  ///Obtiene la localización actual de la cofradía
+  Future<List<String>> getLocationProcesion(String idCofradia) async {
+    HttpOverrides.global = MyHttpOverrides();
+    Uri url = Uri.parse(
+        domain + 'selectLocationCofradia.php?idCofradia=' + idCofradia);
+    http.Response response = await http.get(url);
+    List<String> localizacion = [];
+
+    if (response.statusCode == 200) {
+      var data = json.decode(response.body);
+      localizacion.add(data[0]['altitud']);
+      localizacion.add(data[0]['latitud']);
+    }
+    return localizacion;
+  }
 }
 
 ///Clase necesaria para generar las consutas a la base de datos debido a que la conexion no esta certificada, por lo que debemos
