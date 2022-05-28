@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:infocofrade/dbExterna/conector.dart';
-import 'package:infocofrade/main_screen.dart';
+import 'package:infocofrade/main.dart';
 import 'package:infocofrade/models/hermano_model.dart';
 import 'package:infocofrade/models/qr_model.dart';
 import 'package:infocofrade/views/itinerario_screen.dart';
