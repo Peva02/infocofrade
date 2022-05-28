@@ -8,7 +8,7 @@
             "name": "infocofrade",
             "request": "launch",
             "type": "dart",
-            "program": "lib/main_screen.dart"
+            "program": "lib/main.dart"
         },
         {
             "name": "infocofrade (profile mode)",

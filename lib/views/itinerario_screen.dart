@@ -185,8 +185,10 @@ class _Itinerario extends State<Itinerario> {
                                         child: Padding(
                                           padding:
                                               const EdgeInsets.only(left: 8.0),
-                                          child:
-                                              Text(procesion.fecha.toString()),
+                                          child: Text(validationText(procesion
+                                              .fecha
+                                              .toString()
+                                              .trim())),
                                         ),
                                       )
                                     ],

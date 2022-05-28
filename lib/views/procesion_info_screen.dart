@@ -104,39 +104,30 @@ class _ProcesionInfo extends State<ProcesionInfo> {
         ),
         body: RefreshIndicator(
           onRefresh: () async {},
-          child: FutureBuilder(
-            future: db.getLocationProcesion(procesion.idCofradia.toString()),
-            builder: (BuildContext context, AsyncSnapshot snapshot) {
-              if (snapshot.hasData) {
-                return Center(
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 10, right: 10),
-                    child: Center(
-                      child: SizedBox(
-                        width: 1000,
-                        child: Column(
+          child: Center(
+            child: Padding(
+              padding: const EdgeInsets.only(left: 10, right: 10),
+              child: Center(
+                child: SizedBox(
+                  width: 1000,
+                  child: Column(
+                    children: [
+                      Expanded(
+                        child: ListView(
                           children: [
-                            Expanded(
-                              child: ListView(
-                                children: [
-                                  Column(
-                                    children: [
-                                      datos(),
-                                    ],
-                                  ),
-                                ],
-                              ),
+                            Column(
+                              children: [
+                                datos(),
+                              ],
                             ),
                           ],
                         ),
                       ),
-                    ),
+                    ],
                   ),
-                );
-              } else {
-                return screenCircularProgress();
-              }
-            },
+                ),
+              ),
+            ),
           ),
         ),
         floatingActionButton: FloatingActionButton(
@@ -225,11 +216,13 @@ class _ProcesionInfo extends State<ProcesionInfo> {
               Row(
                 children: [
                   Expanded(
-                    child: SelectableText(
+                    child: Text(
                       validationText(procesion.descripcion.toString()),
-                      maxLines: 2,
-                      style: const TextStyle(color: Colors.white),
-                      textAlign: TextAlign.center,
+                      maxLines: 15,
+                      style: const TextStyle(
+                        color: Colors.white,
+                      ),
+                      textAlign: TextAlign.justify,
                     ),
                   ),
                 ],
@@ -250,7 +243,7 @@ class _ProcesionInfo extends State<ProcesionInfo> {
                     maxLines: 20,
                     overflow: TextOverflow.ellipsis,
                     softWrap: false,
-                    textAlign: TextAlign.justify,
+                    textAlign: TextAlign.left,
                   ),
                 ),
               ),
@@ -359,6 +352,7 @@ class _ProcesionInfo extends State<ProcesionInfo> {
   }
 
   getPosition() async {
+    final GoogleMapController controller = await _controller.future;
     await db
         .getLocationProcesion(procesion.idCofradia.toString())
         .then((value) {
@@ -384,13 +378,10 @@ class _ProcesionInfo extends State<ProcesionInfo> {
         target: _coordenadas,
         zoom: 16,
       );
+      controller.animateCamera(CameraUpdate.newCameraPosition(_kGooglePlex));
     } catch (e) {
-      latitud = 0;
-      altitud = 0;
+      null;
     }
     setState(() {});
-
-    final GoogleMapController controller = await _controller.future;
-    controller.animateCamera(CameraUpdate.newCameraPosition(_kGooglePlex));
   }
 }
