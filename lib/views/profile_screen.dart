@@ -431,7 +431,7 @@ class _ProfileState extends State<Profile> {
                   ),
                   Expanded(
                     child: Text(
-                      '¡Usuario actualiazdo correctamente!',
+                      '¡Usuario actualizado correctamente!',
                       textAlign: TextAlign.center,
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
