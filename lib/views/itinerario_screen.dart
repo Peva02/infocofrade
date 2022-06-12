@@ -55,11 +55,15 @@ class _Itinerario extends State<Itinerario> {
           setState(() {
             listaProcesiones.clear();
           });
-          await conector.getProcesiones().then((value) {
-            setState(() {
-              listaProcesiones.addAll(value);
-            });
-          });
+          await conector.getProcesiones().then(
+            (value) {
+              setState(
+                () {
+                  listaProcesiones.addAll(value);
+                },
+              );
+            },
+          );
         },
         child: FutureBuilder(
           future: conector.getProcesiones(),
@@ -68,6 +72,7 @@ class _Itinerario extends State<Itinerario> {
               return Center(
                 child: SizedBox(
                   width: 1000,
+                  height: MediaQuery.of(context).size.height + 5.0,
                   child: ListView.builder(
                     primary: false,
                     itemCount: listaProcesiones.length,
@@ -95,6 +100,22 @@ class _Itinerario extends State<Itinerario> {
             }
           },
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.amber.shade700,
+        child: const Icon(Icons.refresh),
+        onPressed: () async {
+          await conector.getProcesiones().then(
+            (value) {
+              setState(
+                () {
+                  listaProcesiones.clear();
+                  listaProcesiones.addAll(value);
+                },
+              );
+            },
+          );
+        },
       ),
     );
   }

@@ -87,8 +87,8 @@ class _QRState extends State<QR> {
                               width: 400,
                               child: Column(
                                 children: [
-                                  labelText(null, "Código", Colors.white,
-                                      Colors.white),
+                                  labelText(null, "Código de acceso",
+                                      Colors.white, Colors.white),
                                   SizedBox(
                                     width:
                                         MediaQuery.of(context).size.width / 2,
